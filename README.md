@@ -2,7 +2,7 @@
 
 Aplicativo de compras para pet shop com recomendações personalizadas, desenvolvido em React Native.
 
-Projeto da disciplina de Sistemas de Informação — Desenvolvimento Mobile Prof. Bruno Rafael Araújo Vasconcelos
+Projeto da disciplina de Sistemas de Informação — Desenvolvimento Mobile 
 
 📋 Sobre o projeto
 
@@ -17,6 +17,7 @@ Permitir adicionar e remover itens de um carrinho de compras dinâmico.
 Registrar uma compra para cada produto ao finalizar o pedido com sucesso.
 Oferecer um assistente com IA para auxiliar o usuário a esclarecer dúvidas.
 Organizar o código em componentes reutilizáveis, com nomenclatura clara e consistente.
+
 ✅ Escopo da Fase 1
 Está no escopo	Fora do escopo (fases futuras)
 Telas, navegação e componentes visuais	Back-end e banco de dados reais
@@ -24,6 +25,7 @@ Autenticação simulada (sem token real)	Autenticação com token e criptografia
 Catálogo e compras com dados mock	Integração com API e persistência remota
 Validação de formulários no dispositivo	Meios de pagamento e gateway
 Assistente com IA para dúvidas do usuário	Recomendação automática por histórico real
+
 🚀 Funcionalidades (Requisitos Funcionais)
 Código	Requisito	Descrição
 RF01	Cadastrar usuário	Criar conta com nome completo, e-mail, CPF e senha (com confirmação).
@@ -35,6 +37,7 @@ RF06	Remover do carrinho	Excluir um item específico do carrinho.
 RF07	Finalizar pedido	Concluir a compra (pagamento no caixa da loja).
 RF08	Registrar compra	Gerar um registro de compra para cada produto do carrinho.
 RF09	Assistente com IA	Disponibilizar assistente para dúvidas sobre produtos e pedidos.
+
 🔐 Regras de validação do cadastro
 Campo	Regra
 Nome completo	Obrigatório, mínimo de 2 caracteres.
@@ -101,6 +104,8 @@ React Navigation — gerenciamento de rotas e fluxo entre telas.
 Hooks (useState, useContext) ou biblioteca de estado — gerenciamento do carrinho.
 Componentes reutilizáveis (botões, campos, cartões de produto) organizados por responsabilidade.
 Dados mock em arquivos locais para produtos e registros de compra.
+
+
 📦 Como executar
 bash
 # Instalar dependências
