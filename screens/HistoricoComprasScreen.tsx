@@ -11,6 +11,7 @@ import {
 
     import { comprasMock } from "../src/data/compras";
     import type { RootStackParamList } from "../navigation/AppNavigator";
+    import Assistente from "../src/components/Assistente";
 
     type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -86,6 +87,8 @@ import {
             ))
             )}
         </ScrollView>
+
+        <Assistente />
         </View>
     );
     }
@@ -189,4 +192,5 @@ import {
         color: "#64748B",
         textAlign: "center",
     },
-});
+    });
+

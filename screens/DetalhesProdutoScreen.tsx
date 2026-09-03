@@ -13,6 +13,8 @@ import {
     import { useCart } from "../src/contexts/CartContext";
     import { produtosMock } from "../src/data/produtos";
     import type { RootStackParamList } from "../navigation/AppNavigator";
+    import Assistente from "../src/components/Assistente";
+    import BotaoPrimario from "../src/components/BotaoPrimario";
 
     type NavigationProp =
     NativeStackNavigationProp<RootStackParamList>;
@@ -39,14 +41,10 @@ import {
             Produto não encontrado
             </Text>
 
-            <Pressable
-            style={styles.button}
+            <BotaoPrimario
+            titulo="Voltar ao catálogo"
             onPress={() => navigation.navigate("Catalogo")}
-            >
-            <Text style={styles.buttonText}>
-                Voltar ao catálogo
-            </Text>
-            </Pressable>
+            />
         </View>
         );
     }
@@ -56,11 +54,10 @@ import {
 
     function handleAdicionarAoCarrinho() {
         if (!produto) {
-        return;
+            return;
         }
 
         adicionarAoCarrinho(produto);
-
         navigation.navigate("Carrinho");
     }
 
@@ -164,15 +161,13 @@ import {
             </View>
             </View>
 
-            <Pressable
-            style={styles.button}
+            <BotaoPrimario
+            titulo="Adicionar ao carrinho"
             onPress={handleAdicionarAoCarrinho}
-            >
-            <Text style={styles.buttonText}>
-                Adicionar ao carrinho
-            </Text>
-            </Pressable>
+            />
         </ScrollView>
+
+        <Assistente />
         </View>
     );
     }
@@ -305,19 +300,6 @@ import {
         fontSize: 14,
         fontWeight: "700",
         color: "#172033",
-    },
-
-    button: {
-        backgroundColor: "#2563EB",
-        borderRadius: 12,
-        paddingVertical: 15,
-        alignItems: "center",
-    },
-
-    buttonText: {
-        color: "#FFFFFF",
-        fontSize: 16,
-        fontWeight: "800",
     },
 
     errorContainer: {

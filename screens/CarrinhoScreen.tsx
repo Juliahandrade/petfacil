@@ -12,6 +12,8 @@ import {
 
     import { useCart } from "../src/contexts/CartContext";
     import type { RootStackParamList } from "../navigation/AppNavigator";
+    import Assistente from "../src/components/Assistente";
+    import BotaoPrimario from "../src/components/BotaoPrimario";
 
     type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -43,6 +45,7 @@ import {
         );
     }
 
+    // CARRINHO VAZIO
     if (itens.length === 0) {
         return (
         <View style={styles.emptyContainer}>
@@ -62,123 +65,130 @@ import {
                 Voltar ao catálogo
             </Text>
             </Pressable>
+
+            <Assistente />
         </View>
         );
     }
 
+    // CARRINHO COM PRODUTOS
     return (
+        <View style={styles.container}>
         <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.content}
+            showsVerticalScrollIndicator={false}
         >
-        <Pressable
+            <Pressable
             style={styles.backLink}
             onPress={() => navigation.navigate("Catalogo")}
-        >
+            >
             <Text style={styles.backLinkText}>
-            ← Voltar ao catálogo
+                ← Voltar ao catálogo
             </Text>
-        </Pressable>
+            </Pressable>
 
-        <Text style={styles.title}>Meu carrinho</Text>
+            <Text style={styles.title}>Meu carrinho</Text>
 
-        <Text style={styles.subtitle}>
+            <Text style={styles.subtitle}>
             Confira os produtos selecionados.
-        </Text>
+            </Text>
 
-        {itens.map((item) => {
+            {itens.map((item) => {
             const subtotal = calcularSubtotal(item);
 
             const precoUnitario =
-            subtotal / item.quantidade;
+                subtotal / item.quantidade;
 
             return (
-            <View key={item.produto.id} style={styles.card}>
+                <View
+                key={item.produto.id}
+                style={styles.card}
+                >
                 <Text style={styles.productName}>
-                {item.produto.nome}
+                    {item.produto.nome}
                 </Text>
 
                 <Text style={styles.productType}>
-                {item.produto.tipo}
+                    {item.produto.tipo}
                 </Text>
 
                 <Text style={styles.price}>
-                R${" "}
-                {precoUnitario
+                    R${" "}
+                    {precoUnitario
                     .toFixed(2)
                     .replace(".", ",")}
                 </Text>
 
                 <View style={styles.quantityContainer}>
-                <Pressable
+                    <Pressable
                     style={styles.quantityButton}
                     onPress={() =>
-                    diminuirQuantidade(item.produto.id)
+                        diminuirQuantidade(item.produto.id)
                     }
-                >
+                    >
                     <Text style={styles.quantityButtonText}>
-                    −
+                        −
                     </Text>
-                </Pressable>
+                    </Pressable>
 
-                <Text style={styles.quantity}>
+                    <Text style={styles.quantity}>
                     {item.quantidade}
-                </Text>
+                    </Text>
 
-                <Pressable
+                    <Pressable
                     style={styles.quantityButton}
                     onPress={() =>
-                    aumentarQuantidade(item.produto.id)
+                        aumentarQuantidade(item.produto.id)
                     }
-                >
+                    >
                     <Text style={styles.quantityButtonText}>
-                    +
+                        +
                     </Text>
-                </Pressable>
+                    </Pressable>
                 </View>
 
                 <Text style={styles.subtotal}>
-                Subtotal: R${" "}
-                {subtotal.toFixed(2).replace(".", ",")}
+                    Subtotal: R${" "}
+                    {subtotal
+                    .toFixed(2)
+                    .replace(".", ",")}
                 </Text>
 
                 <Pressable
-                style={styles.removeButton}
-                onPress={() =>
+                    style={styles.removeButton}
+                    onPress={() =>
                     removerDoCarrinho(item.produto.id)
-                }
+                    }
                 >
-                <Text style={styles.removeText}>
+                    <Text style={styles.removeText}>
                     Remover produto
-                </Text>
+                    </Text>
                 </Pressable>
-            </View>
+                </View>
             );
-        })}
+            })}
 
-        <View style={styles.totalContainer}>
+            <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>
-            Total
+                Total
             </Text>
 
             <Text style={styles.total}>
-            R${" "}
-            {calcularTotal()
+                R${" "}
+                {calcularTotal()
                 .toFixed(2)
                 .replace(".", ",")}
             </Text>
-        </View>
+            </View>
 
-        <Pressable
-            style={styles.finishButton}
+           <BotaoPrimario
+            titulo="Finalizar pedido"
             onPress={handleFinalizarPedido}
-        >
-            <Text style={styles.finishButtonText}>
-            Finalizar pedido
-            </Text>
-        </Pressable>
+            style={styles.finishButton}/>
         </ScrollView>
+
+        <Assistente />
+        </View>
     );
     }
 
@@ -323,12 +333,6 @@ import {
         marginTop: 16,
     },
 
-    finishButtonText: {
-        color: "#FFFFFF",
-        fontSize: 16,
-        fontWeight: "800",
-    },
-
     emptyContainer: {
         flex: 1,
         justifyContent: "center",
@@ -364,4 +368,5 @@ import {
         fontSize: 15,
         fontWeight: "700",
     },
-});
+    });
+
