@@ -1,4 +1,6 @@
 import {
+    KeyboardAvoidingView,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -71,13 +73,15 @@ import {
     }
 
     if (numero.length <= 9) {
-        return `${numero.slice(0, 3)}.${numero.slice(3, 6)}.${numero.slice(6)}`;
+        return `${numero.slice(0, 3)}.${numero.slice(3, 6)}.${numero.slice(
+        6
+        )}`;
     }
 
-    return `${numero.slice(0, 3)}.${numero.slice(3, 6)}.${numero.slice(
-        6,
-        9
-    )}-${numero.slice(9)}`;
+    return `${numero.slice(0, 3)}.${numero.slice(
+        3,
+        6
+    )}.${numero.slice(6, 9)}-${numero.slice(9)}`;
     }
 
     function validarEmail(email: string) {
@@ -94,6 +98,8 @@ import {
     const [cpf, setCpf] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
+
+    const [erroCadastro, setErroCadastro] = useState("");
 
     const nomeValido = nome.trim().length >= 2;
     const emailValido = validarEmail(email);
@@ -114,6 +120,8 @@ import {
         return;
         }
 
+        setErroCadastro("");
+
         const usuario = {
         nomeCompleto: nome.trim(),
         cpf: limparCPF(cpf),
@@ -121,20 +129,33 @@ import {
         senha,
         };
 
-        cadastrarUsuario(usuario);
+        const cadastroRealizado = cadastrarUsuario(usuario);
+
+        if (!cadastroRealizado) {
+        setErroCadastro(
+            "Este CPF ou e-mail já está cadastrado."
+        );
+
+        return;
+        }
 
         navigation.navigate("Login");
     }
 
     return (
-        <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+        <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-        <View style={styles.header}>
+        <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            showsVerticalScrollIndicator={false}
+        >
+            <View style={styles.header}>
             <View style={styles.logoCircle}>
-            <Text style={styles.logo}>🐾</Text>
+                <Text style={styles.logo}>🐾</Text>
             </View>
 
             <Text style={styles.brand}>PetFacil</Text>
@@ -142,147 +163,193 @@ import {
             <Text style={styles.title}>Criar sua conta</Text>
 
             <Text style={styles.subtitle}>
-            Cadastre-se para começar a cuidar ainda mais do seu pet.
+                Cadastre-se para começar a cuidar ainda mais do seu pet.
             </Text>
-        </View>
+            </View>
 
-        <View style={styles.form}>
+            <View style={styles.form}>
             <Text style={styles.label}>Nome completo</Text>
 
             <TextInput
-            style={[
+                style={[
                 styles.input,
-                nome.length > 0 && !nomeValido && styles.inputError,
-            ]}
-            placeholder="Digite seu nome completo"
-            placeholderTextColor="#8994A8"
-            value={nome}
-            onChangeText={setNome}
-            autoCapitalize="words"
+                nome.length > 0 &&
+                    !nomeValido &&
+                    styles.inputError,
+                ]}
+                placeholder="Digite seu nome completo"
+                placeholderTextColor="#8994A8"
+                value={nome}
+                onChangeText={(valor) => {
+                setNome(valor);
+                setErroCadastro("");
+                }}
+                autoCapitalize="words"
+                returnKeyType="next"
             />
 
             {nome.length > 0 && !nomeValido && (
-            <Text style={styles.errorText}>
+                <Text style={styles.errorText}>
                 O nome deve ter pelo menos 2 caracteres.
-            </Text>
+                </Text>
             )}
 
             <Text style={styles.label}>E-mail</Text>
 
             <TextInput
-            style={[
+                style={[
                 styles.input,
-                email.length > 0 && !emailValido && styles.inputError,
-            ]}
-            placeholder="Digite seu e-mail"
-            placeholderTextColor="#8994A8"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
+                email.length > 0 &&
+                    !emailValido &&
+                    styles.inputError,
+                ]}
+                placeholder="Digite seu e-mail"
+                placeholderTextColor="#8994A8"
+                value={email}
+                onChangeText={(valor) => {
+                setEmail(valor);
+                setErroCadastro("");
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="next"
             />
 
             {email.length > 0 && !emailValido && (
-            <Text style={styles.errorText}>
+                <Text style={styles.errorText}>
                 Digite um e-mail válido.
-            </Text>
+                </Text>
             )}
 
             <Text style={styles.label}>CPF</Text>
 
             <TextInput
-            style={[
+                style={[
                 styles.input,
-                cpf.length > 0 && !cpfValido && styles.inputError,
-            ]}
-            placeholder="000.000.000-00"
-            placeholderTextColor="#8994A8"
-            value={cpf}
-            onChangeText={(valor) => setCpf(formatarCPF(valor))}
-            keyboardType="numeric"
-            maxLength={14}
+                cpf.length > 0 &&
+                    !cpfValido &&
+                    styles.inputError,
+                ]}
+                placeholder="000.000.000-00"
+                placeholderTextColor="#8994A8"
+                value={cpf}
+                onChangeText={(valor) => {
+                setCpf(formatarCPF(valor));
+                setErroCadastro("");
+                }}
+                keyboardType="numeric"
+                maxLength={14}
+                returnKeyType="next"
             />
 
             {cpf.length > 0 && !cpfValido && (
-            <Text style={styles.errorText}>
+                <Text style={styles.errorText}>
                 Digite um CPF válido.
-            </Text>
+                </Text>
             )}
 
             <Text style={styles.label}>Senha</Text>
 
             <TextInput
-            style={[
+                style={[
                 styles.input,
-                senha.length > 0 && !senhaValida && styles.inputError,
-            ]}
-            placeholder="Digite sua senha"
-            placeholderTextColor="#8994A8"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry
+                senha.length > 0 &&
+                    !senhaValida &&
+                    styles.inputError,
+                ]}
+                placeholder="Digite sua senha"
+                placeholderTextColor="#8994A8"
+                value={senha}
+                onChangeText={(valor) => {
+                setSenha(valor);
+                setErroCadastro("");
+                }}
+                secureTextEntry
+                returnKeyType="next"
             />
 
             {senha.length > 0 && !senhaValida && (
-            <Text style={styles.errorText}>
+                <Text style={styles.errorText}>
                 A senha deve ter pelo menos 6 caracteres.
-            </Text>
+                </Text>
             )}
 
             <Text style={styles.label}>Confirmar senha</Text>
 
             <TextInput
-            style={[
+                style={[
                 styles.input,
                 confirmarSenha.length > 0 &&
-                !confirmacaoValida &&
-                styles.inputError,
-            ]}
-            placeholder="Digite sua senha novamente"
-            placeholderTextColor="#8994A8"
-            value={confirmarSenha}
-            onChangeText={setConfirmarSenha}
-            secureTextEntry
+                    !confirmacaoValida &&
+                    styles.inputError,
+                ]}
+                placeholder="Digite sua senha novamente"
+                placeholderTextColor="#8994A8"
+                value={confirmarSenha}
+                onChangeText={(valor) => {
+                setConfirmarSenha(valor);
+                setErroCadastro("");
+                }}
+                secureTextEntry
+                returnKeyType="done"
             />
 
-            {confirmarSenha.length > 0 && !confirmacaoValida && (
-            <Text style={styles.errorText}>
-                As senhas precisam ser iguais.
-            </Text>
+            {confirmarSenha.length > 0 &&
+                !confirmacaoValida && (
+                <Text style={styles.errorText}>
+                    As senhas precisam ser iguais.
+                </Text>
+                )}
+
+            {erroCadastro !== "" && (
+                <Text style={styles.errorText}>
+                {erroCadastro}
+                </Text>
             )}
 
             <TouchableOpacity
-            style={[
+                style={[
                 styles.button,
-                !formularioValido && styles.buttonDisabled,
-            ]}
-            onPress={cadastrar}
-            disabled={!formularioValido}
-            activeOpacity={0.8}
+                !formularioValido &&
+                    styles.buttonDisabled,
+                ]}
+                onPress={cadastrar}
+                disabled={!formularioValido}
+                activeOpacity={0.8}
             >
-            <Text style={styles.buttonText}>Criar conta</Text>
+                <Text style={styles.buttonText}>
+                Criar conta
+                </Text>
             </TouchableOpacity>
-        </View>
+            </View>
 
-        <TouchableOpacity
+            <TouchableOpacity
             style={styles.loginButton}
             onPress={() => navigation.goBack()}
-        >
+            >
             <Text style={styles.loginText}>
-            Já possui uma conta?{" "}
-            <Text style={styles.loginHighlight}>Entrar</Text>
+                Já possui uma conta?{" "}
+                <Text style={styles.loginHighlight}>
+                Entrar
+                </Text>
             </Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
         </ScrollView>
+        </KeyboardAvoidingView>
     );
     }
 
     const styles = StyleSheet.create({
+    keyboardContainer: {
+        flex: 1,
+    },
+
     container: {
         flexGrow: 1,
         paddingHorizontal: 24,
         paddingVertical: 40,
+        paddingBottom: 60,
         backgroundColor: "#F7FAFF",
     },
 
@@ -399,4 +466,4 @@ import {
         color: "#2563EB",
         fontWeight: "800",
     },
-    });
+});

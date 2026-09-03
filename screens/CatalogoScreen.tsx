@@ -6,9 +6,10 @@ import {
   View,
 } from "react-native";
 
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import { produtosMock } from "../src/data/produtos";
 import { useCart } from "../src/contexts/CartContext";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 
 type CatalogoScreenProps = NativeStackScreenProps<
@@ -20,9 +21,9 @@ export default function CatalogoScreen({
   navigation,
 }: CatalogoScreenProps) {
   const { adicionarAoCarrinho, itens } = useCart();
+
   const produtos = produtosMock;
 
-  // Estado de erro
   const erro = false;
 
   if (erro) {
@@ -40,7 +41,6 @@ export default function CatalogoScreen({
     );
   }
 
-  // Estado vazio
   if (produtos.length === 0) {
     return (
       <View style={styles.emptyContainer}>
@@ -57,8 +57,6 @@ export default function CatalogoScreen({
 
   return (
     <View style={styles.container}>
-
-      {/* Cabeçalho fixo */}
       <View style={styles.header}>
         <Text style={styles.title}>Catálogo</Text>
 
@@ -78,7 +76,6 @@ export default function CatalogoScreen({
         </Pressable>
       </View>
 
-      {/* Área que rola */}
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -94,14 +91,22 @@ export default function CatalogoScreen({
           <Text style={styles.historyButtonText}>
             🧾 Histórico de compras
           </Text>
-      </Pressable>
+        </Pressable>
+
         {produtos.map((produto) => {
           const temPromocao =
             produto.precoPromocional < produto.precoAtual;
 
           return (
-            <View key={produto.id} style={styles.card}>
-              {/* Selo de promoção */}
+            <Pressable
+              key={produto.id}
+              style={styles.card}
+              onPress={() =>
+                navigation.navigate("DetalhesProduto", {
+                  produtoId: produto.id,
+                })
+              }
+            >
               {temPromocao && (
                 <View style={styles.badge}>
                   <Text style={styles.badgeText}>
@@ -110,17 +115,14 @@ export default function CatalogoScreen({
                 </View>
               )}
 
-              {/* Nome */}
               <Text style={styles.productName}>
                 {produto.nome}
               </Text>
 
-              {/* Tipo */}
               <Text style={styles.productType}>
                 {produto.tipo}
               </Text>
 
-              {/* Preços */}
               {temPromocao ? (
                 <>
                   <Text style={styles.oldPrice}>
@@ -146,26 +148,30 @@ export default function CatalogoScreen({
                 </Text>
               )}
 
-              {/* Descrição */}
               <Text style={styles.description}>
                 {produto.descricao}
               </Text>
 
-              {/* Data de validade */}
               <Text style={styles.validade}>
                 Validade: {produto.dataValidade}
               </Text>
 
-              {/* Botão adicionar ao carrinho */}
               <Pressable
                 style={styles.button}
-                onPress={() => adicionarAoCarrinho(produto)}
+                onPress={(event) => {
+                  event.stopPropagation();
+                  adicionarAoCarrinho(produto);
+                }}
               >
                 <Text style={styles.buttonText}>
                   Adicionar ao carrinho
                 </Text>
               </Pressable>
-            </View>
+
+              <Text style={styles.detailsHint}>
+                Toque no produto para ver detalhes
+              </Text>
+            </Pressable>
           );
         })}
       </ScrollView>
@@ -195,7 +201,23 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#5F6B7A",
     marginTop: 6,
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+
+  historyButton: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#2563EB",
+    borderRadius: 12,
+    paddingVertical: 13,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  historyButtonText: {
+    color: "#2563EB",
+    fontSize: 15,
+    fontWeight: "700",
   },
 
   card: {
@@ -275,6 +297,13 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
+  detailsHint: {
+    fontSize: 12,
+    color: "#94A3B8",
+    textAlign: "center",
+    marginTop: 10,
+  },
+
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
@@ -339,19 +368,4 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "800",
   },
-  historyButton: {
-  backgroundColor: "#FFFFFF",
-  borderWidth: 1,
-  borderColor: "#2563EB",
-  borderRadius: 12,
-  paddingVertical: 13,
-  alignItems: "center",
-  marginBottom: 20,
-},
-
-historyButtonText: {
-  color: "#2563EB",
-  fontSize: 15,
-  fontWeight: "700",
-},
 });

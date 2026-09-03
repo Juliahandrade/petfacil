@@ -5,6 +5,7 @@ import CadastroScreen from "../screens/CadastroScreen";
 import CatalogoScreen from "../screens/CatalogoScreen";
 import CarrinhoScreen from "../screens/CarrinhoScreen";
 import HistoricoComprasScreen from "../screens/HistoricoComprasScreen";
+import DetalhesProdutoScreen from "../screens/DetalhesProdutoScreen";
 
 
 export type RootStackParamList = {
@@ -13,6 +14,9 @@ export type RootStackParamList = {
     Catalogo: undefined;
     Carrinho: undefined;
     HistoricoCompras: undefined;
+    DetalhesProduto: {
+        produtoId: number;
+    };
 
     };
 
@@ -31,6 +35,7 @@ export type RootStackParamList = {
         <Stack.Screen name="Catalogo" component={CatalogoScreen} />
         <Stack.Screen name="Carrinho" component={CarrinhoScreen} />
         <Stack.Screen name="HistoricoCompras"component={HistoricoComprasScreen}/>
+        <Stack.Screen name="DetalhesProduto"component={DetalhesProdutoScreen}/>
         </Stack.Navigator>
     );
     }

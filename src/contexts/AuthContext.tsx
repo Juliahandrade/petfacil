@@ -1,6 +1,11 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useState,
+    } from "react";
 
-type Usuario = {
+    type Usuario = {
     nomeCompleto: string;
     cpf: string;
     login: string;
@@ -10,12 +15,14 @@ type Usuario = {
     type AuthContextData = {
     usuario: Usuario | null;
     usuarioAutenticado: Usuario | null;
-    cadastrarUsuario: (novoUsuario: Usuario) => void;
+    cadastrarUsuario: (novoUsuario: Usuario) => boolean;
     fazerLogin: (login: string, senha: string) => boolean;
     sair: () => void;
     };
 
-    const AuthContext = createContext<AuthContextData | undefined>(undefined);
+    const AuthContext = createContext<AuthContextData | undefined>(
+    undefined
+    );
 
     type AuthProviderProps = {
     children: ReactNode;
@@ -23,29 +30,55 @@ type Usuario = {
 
     export function AuthProvider({ children }: AuthProviderProps) {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
+
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+
     const [usuarioAutenticado, setUsuarioAutenticado] =
         useState<Usuario | null>(null);
 
     function cadastrarUsuario(novoUsuario: Usuario) {
+        const cpfJaCadastrado = usuarios.some(
+        (usuario) => usuario.cpf === novoUsuario.cpf
+        );
+
+        if (cpfJaCadastrado) {
+        return false;
+        }
+
+        const loginJaCadastrado = usuarios.some(
+        (usuario) => usuario.login === novoUsuario.login
+        );
+
+        if (loginJaCadastrado) {
+        return false;
+        }
+
+        setUsuarios((usuariosAtuais) => [
+        ...usuariosAtuais,
+        novoUsuario,
+        ]);
+
         setUsuario(novoUsuario);
+
+        return true;
     }
 
     function fazerLogin(login: string, senha: string) {
-        if (!usuario) {
+        const loginNormalizado = login.trim().toLowerCase();
+
+        const usuarioEncontrado = usuarios.find(
+        (usuario) =>
+            usuario.login === loginNormalizado &&
+            usuario.senha === senha
+        );
+
+        if (!usuarioEncontrado) {
         return false;
         }
 
-        const loginValido =
-        usuario.login === login.trim().toLowerCase();
+        setUsuarioAutenticado(usuarioEncontrado);
 
-        const senhaValida = usuario.senha === senha;
-
-        if (loginValido && senhaValida) {
-        setUsuarioAutenticado(usuario);
         return true;
-        }
-
-        return false;
     }
 
     function sair() {
@@ -71,8 +104,10 @@ type Usuario = {
     const context = useContext(AuthContext);
 
     if (!context) {
-        throw new Error("useAuth deve ser usado dentro de AuthProvider");
+        throw new Error(
+        "useAuth deve ser usado dentro de AuthProvider"
+        );
     }
 
     return context;
-    }
+}
