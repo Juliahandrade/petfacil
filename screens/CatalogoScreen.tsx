@@ -8,16 +8,23 @@ import {
 
 import { produtosMock } from "../src/data/produtos";
 import { useCart } from "../src/contexts/CartContext";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "../navigation/AppNavigator";
 
-export default function CatalogoScreen() {
-  const { adicionarAoCarrinho } = useCart();
+type CatalogoScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Catalogo"
+>;
 
+export default function CatalogoScreen({
+  navigation,
+}: CatalogoScreenProps) {
+  const { adicionarAoCarrinho, itens } = useCart();
   const produtos = produtosMock;
 
   // Estado de erro
   const erro = false;
 
-  // Estado de erro
   if (erro) {
     return (
       <View style={styles.emptyContainer}>
@@ -49,91 +56,120 @@ export default function CatalogoScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
-      <Text style={styles.title}>Catálogo</Text>
+    <View style={styles.container}>
 
-      <Text style={styles.subtitle}>
-        Encontre os melhores produtos para o seu pet.
-      </Text>
+      {/* Cabeçalho fixo */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Catálogo</Text>
 
-      {produtos.map((produto) => {
-        const temPromocao =
-          produto.precoPromocional < produto.precoAtual;
+        <Pressable
+          style={styles.cartIconButton}
+          onPress={() => navigation.navigate("Carrinho")}
+        >
+          <Text style={styles.cartIcon}>🛒</Text>
 
-        return (
-          <View key={produto.id} style={styles.card}>
-            {/* Selo de promoção */}
-            {temPromocao && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  PROMOÇÃO
-                </Text>
-              </View>
-            )}
+          {itens.length > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>
+                {itens.length}
+              </Text>
+            </View>
+          )}
+        </Pressable>
+      </View>
 
-            {/* Nome */}
-            <Text style={styles.productName}>
-              {produto.nome}
-            </Text>
+      {/* Área que rola */}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.subtitle}>
+          Encontre os melhores produtos para o seu pet.
+        </Text>
 
-            {/* Tipo */}
-            <Text style={styles.productType}>
-              {produto.tipo}
-            </Text>
+        <Pressable
+          style={styles.historyButton}
+          onPress={() => navigation.navigate("HistoricoCompras")}
+        >
+          <Text style={styles.historyButtonText}>
+            🧾 Histórico de compras
+          </Text>
+      </Pressable>
+        {produtos.map((produto) => {
+          const temPromocao =
+            produto.precoPromocional < produto.precoAtual;
 
-            {/* Preços */}
-            {temPromocao ? (
-              <>
-                <Text style={styles.oldPrice}>
-                  De R${" "}
+          return (
+            <View key={produto.id} style={styles.card}>
+              {/* Selo de promoção */}
+              {temPromocao && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    PROMOÇÃO
+                  </Text>
+                </View>
+              )}
+
+              {/* Nome */}
+              <Text style={styles.productName}>
+                {produto.nome}
+              </Text>
+
+              {/* Tipo */}
+              <Text style={styles.productType}>
+                {produto.tipo}
+              </Text>
+
+              {/* Preços */}
+              {temPromocao ? (
+                <>
+                  <Text style={styles.oldPrice}>
+                    De R${" "}
+                    {produto.precoAtual
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </Text>
+
+                  <Text style={styles.price}>
+                    R${" "}
+                    {produto.precoPromocional
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </Text>
+                </>
+              ) : (
+                <Text style={styles.price}>
+                  R${" "}
                   {produto.precoAtual
                     .toFixed(2)
                     .replace(".", ",")}
                 </Text>
+              )}
 
-                <Text style={styles.price}>
-                  R${" "}
-                  {produto.precoPromocional
-                    .toFixed(2)
-                    .replace(".", ",")}
+              {/* Descrição */}
+              <Text style={styles.description}>
+                {produto.descricao}
+              </Text>
+
+              {/* Data de validade */}
+              <Text style={styles.validade}>
+                Validade: {produto.dataValidade}
+              </Text>
+
+              {/* Botão adicionar ao carrinho */}
+              <Pressable
+                style={styles.button}
+                onPress={() => adicionarAoCarrinho(produto)}
+              >
+                <Text style={styles.buttonText}>
+                  Adicionar ao carrinho
                 </Text>
-              </>
-            ) : (
-              <Text style={styles.price}>
-                R${" "}
-                {produto.precoAtual
-                  .toFixed(2)
-                  .replace(".", ",")}
-              </Text>
-            )}
-
-            {/* Descrição */}
-            <Text style={styles.description}>
-              {produto.descricao}
-            </Text>
-
-            {/* Data de validade */}
-            <Text style={styles.validade}>
-              Validade: {produto.dataValidade}
-            </Text>
-
-            {/* Botão adicionar ao carrinho */}
-            <Pressable
-              style={styles.button}
-              onPress={() => adicionarAoCarrinho(produto)}
-            >
-              <Text style={styles.buttonText}>
-                Adicionar ao carrinho
-              </Text>
-            </Pressable>
-          </View>
-        );
-      })}
-    </ScrollView>
+              </Pressable>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -145,7 +181,7 @@ const styles = StyleSheet.create({
 
   content: {
     padding: 24,
-    paddingTop: 50,
+    paddingTop: 12,
     paddingBottom: 40,
   },
 
@@ -260,4 +296,62 @@ const styles = StyleSheet.create({
     color: "#5F6B7A",
     textAlign: "center",
   },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 50,
+    paddingBottom: 6,
+    backgroundColor: "#F7FAFF",
+  },
+
+  cartIconButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#E8F1FF",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+
+  cartIcon: {
+    fontSize: 24,
+  },
+
+  cartBadge: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#2563EB",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 5,
+  },
+
+  cartBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    fontWeight: "800",
+  },
+  historyButton: {
+  backgroundColor: "#FFFFFF",
+  borderWidth: 1,
+  borderColor: "#2563EB",
+  borderRadius: 12,
+  paddingVertical: 13,
+  alignItems: "center",
+  marginBottom: 20,
+},
+
+historyButtonText: {
+  color: "#2563EB",
+  fontSize: 15,
+  fontWeight: "700",
+},
 });

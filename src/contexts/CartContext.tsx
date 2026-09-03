@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import { Produto } from "../data/produtos";
+import { comprasMock } from "../data/compras";
 
 type ItemCarrinho = {
   produto: Produto;
@@ -17,6 +18,10 @@ type CartContextData = {
   adicionarAoCarrinho: (produto: Produto) => void;
   aumentarQuantidade: (produtoId: number) => void;
   diminuirQuantidade: (produtoId: number) => void;
+  removerDoCarrinho: (produtoId: number) => void;
+  calcularSubtotal: (item: ItemCarrinho) => number;
+  calcularTotal: () => number;
+  finalizarPedido: () => void;
 };
 
 const CartContext = createContext<CartContextData | undefined>(
@@ -85,6 +90,50 @@ export function CartProvider({ children }: CartProviderProps) {
     );
   }
 
+  function removerDoCarrinho(produtoId: number) {
+    setItens((itensAtuais) =>
+      itensAtuais.filter(
+        (item) => item.produto.id !== produtoId
+      )
+    );
+  }
+
+  function calcularSubtotal(item: ItemCarrinho) {
+    const preco =
+      item.produto.precoPromocional < item.produto.precoAtual
+        ? item.produto.precoPromocional
+        : item.produto.precoAtual;
+
+    return preco * item.quantidade;
+  }
+
+  function calcularTotal() {
+    return itens.reduce(
+      (total, item) => total + calcularSubtotal(item),
+      0
+    );
+  }
+
+  function finalizarPedido() {
+    const dataCompra = new Date().toLocaleDateString("pt-BR");
+
+    itens.forEach((item) => {
+      const preco =
+        item.produto.precoPromocional < item.produto.precoAtual
+          ? item.produto.precoPromocional
+          : item.produto.precoAtual;
+
+      // Cria apenas UM registro para cada produto comprado
+      comprasMock.push({
+        nomeProduto: item.produto.nome,
+        preco: preco,
+        dataCompra: dataCompra,
+      });
+    });
+
+    setItens([]);
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -92,6 +141,10 @@ export function CartProvider({ children }: CartProviderProps) {
         adicionarAoCarrinho,
         aumentarQuantidade,
         diminuirQuantidade,
+        removerDoCarrinho,
+        calcularSubtotal,
+        calcularTotal,
+        finalizarPedido,
       }}
     >
       {children}
