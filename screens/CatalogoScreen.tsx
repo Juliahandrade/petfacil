@@ -10,6 +10,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { produtosMock } from "../src/data/produtos";
 import { useCart } from "../src/contexts/CartContext";
+import { useAuth } from "../src/contexts/AuthContext";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import Assistente from "../src/components/Assistente";
 import CardProduto from "../src/components/CardProduto";
@@ -23,10 +24,20 @@ export default function CatalogoScreen({
   navigation,
 }: CatalogoScreenProps) {
   const { adicionarAoCarrinho, itens } = useCart();
+  const { sair } = useAuth();
 
   const produtos = produtosMock;
 
   const erro = false;
+
+  function handleSair() {
+    sair();
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
+    });
+  }
 
   if (erro) {
     return (
@@ -53,6 +64,15 @@ export default function CatalogoScreen({
         <Text style={styles.emptySubtitle}>
           No momento não há produtos para exibir.
         </Text>
+
+        <Pressable
+          style={styles.logoutButton}
+          onPress={handleSair}
+        >
+          <Text style={styles.logoutText}>
+            Sair da conta
+          </Text>
+        </Pressable>
       </View>
     );
   }
@@ -111,6 +131,15 @@ export default function CatalogoScreen({
             }
           />
         ))}
+
+        <Pressable
+          style={styles.logoutButton}
+          onPress={handleSair}
+        >
+          <Text style={styles.logoutText}>
+            Sair da conta
+          </Text>
+        </Pressable>
       </ScrollView>
 
       <Assistente />
@@ -157,6 +186,20 @@ const styles = StyleSheet.create({
     color: "#2563EB",
     fontSize: 15,
     fontWeight: "700",
+  },
+
+  logoutButton: {
+    backgroundColor: "#DC2626",
+    borderRadius: 14,
+    paddingVertical: 15,
+    alignItems: "center",
+    marginTop: 12,
+  },
+
+  logoutText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "800",
   },
 
   emptyContainer: {
@@ -224,4 +267,3 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 });
-

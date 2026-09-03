@@ -1,13 +1,19 @@
 import {
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
     } from "react-native";
+
     import { useState } from "react";
+
     import type { NativeStackScreenProps } from "@react-navigation/native-stack";
     import type { RootStackParamList } from "../navigation/AppNavigator";
+
     import { useAuth } from "../src/contexts/AuthContext";
 
     type LoginScreenProps = NativeStackScreenProps<
@@ -15,7 +21,9 @@ import {
     "Login"
     >;
 
-    export default function LoginScreen({ navigation }: LoginScreenProps) {
+    export default function LoginScreen({
+    navigation,
+    }: LoginScreenProps) {
     const { fazerLogin } = useAuth();
 
     const [login, setLogin] = useState("");
@@ -42,75 +50,101 @@ import {
     }
 
     return (
-        <View style={styles.container}>
-        <View style={styles.logoContainer}>
-            <View style={styles.logoCircle}>
-            <Text style={styles.logo}>🐾</Text>
+        <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+        <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+        >
+            <View style={styles.container}>
+            <View style={styles.logoContainer}>
+                <View style={styles.logoCircle}>
+                <Text style={styles.logo}>🐾</Text>
+                </View>
+
+                <Text style={styles.brand}>PetFacil</Text>
+
+                <Text style={styles.subtitle}>
+                Cuidado, carinho e tudo o que seu pet precisa.
+                </Text>
             </View>
 
-            <Text style={styles.brand}>PetFacil</Text>
+            <View style={styles.form}>
+                <Text style={styles.label}>E-mail</Text>
 
-            <Text style={styles.subtitle}>
-            Cuidado, carinho e tudo o que seu pet precisa.
-            </Text>
-        </View>
+                <TextInput
+                style={[styles.input, erro && styles.inputError]}
+                placeholder="Digite seu e-mail"
+                placeholderTextColor="#8994A8"
+                value={login}
+                onChangeText={setLogin}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                />
 
-        <View style={styles.form}>
-            <Text style={styles.label}>E-mail</Text>
+                <Text style={styles.label}>Senha</Text>
 
-            <TextInput
-            style={[styles.input, erro && styles.inputError]}
-            placeholder="Digite seu e-mail"
-            placeholderTextColor="#8994A8"
-            value={login}
-            onChangeText={setLogin}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            />
+                <TextInput
+                style={[styles.input, erro && styles.inputError]}
+                placeholder="Digite sua senha"
+                placeholderTextColor="#8994A8"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+                />
 
-            <Text style={styles.label}>Senha</Text>
+                {erro !== "" && (
+                <Text style={styles.errorText}>
+                    {erro}
+                </Text>
+                )}
 
-            <TextInput
-            style={[styles.input, erro && styles.inputError]}
-            placeholder="Digite sua senha"
-            placeholderTextColor="#8994A8"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry
-            />
-
-            {erro !== "" && (
-            <Text style={styles.errorText}>{erro}</Text>
-            )}
+                <TouchableOpacity
+                style={styles.button}
+                onPress={entrar}
+                activeOpacity={0.8}
+                >
+                <Text style={styles.buttonText}>
+                    Entrar
+                </Text>
+                </TouchableOpacity>
+            </View>
 
             <TouchableOpacity
-            style={styles.button}
-            onPress={entrar}
-            activeOpacity={0.8}
+                style={styles.registerButton}
+                onPress={() => navigation.navigate("Cadastro")}
             >
-            <Text style={styles.buttonText}>Entrar</Text>
+                <Text style={styles.registerText}>
+                Ainda não tem uma conta?{" "}
+                <Text style={styles.registerHighlight}>
+                    Cadastre-se
+                </Text>
+                </Text>
             </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-            style={styles.registerButton}
-            onPress={() => navigation.navigate("Cadastro")}
-        >
-            <Text style={styles.registerText}>
-            Ainda não tem uma conta?{" "}
-            <Text style={styles.registerHighlight}>Cadastre-se</Text>
-            </Text>
-        </TouchableOpacity>
-        </View>
+            </View>
+        </ScrollView>
+        </KeyboardAvoidingView>
     );
     }
 
     const styles = StyleSheet.create({
+    keyboardContainer: {
+        flex: 1,
+    },
+
+    scrollContent: {
+        flexGrow: 1,
+    },
+
     container: {
         flex: 1,
         justifyContent: "center",
         paddingHorizontal: 24,
+        paddingVertical: 30,
         backgroundColor: "#F7FAFF",
     },
 
