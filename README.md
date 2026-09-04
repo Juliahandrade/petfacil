@@ -1,43 +1,77 @@
 # 🐾 PetFácil
 
-Aplicativo mobile desenvolvido em **React Native + Expo + TypeScript** com o objetivo de facilitar a gestão e o acompanhamento de produtos e serviços relacionados a animais de estimação.
+Aplicativo mobile desenvolvido em **React Native + Expo + TypeScript**, criado com o objetivo de facilitar a visualização de produtos para animais de estimação e o gerenciamento de um carrinho de compras.
 
-O projeto foi desenvolvido como parte da disciplina de **Projeto Integrador**, utilizando tecnologias modernas de desenvolvimento mobile.
+O projeto foi desenvolvido como parte da disciplina de **Projeto Integrador**, aplicando conceitos de desenvolvimento de aplicações mobile, componentização, navegação entre telas e gerenciamento de estado.
 
 ---
 
 # 📱 Sobre o projeto
 
-O **PetFácil** é uma aplicação mobile voltada para o gerenciamento de produtos para pets.
+O **PetFácil** é uma aplicação mobile voltada para o segmento de produtos para animais de estimação.
 
-A aplicação permite ao usuário navegar por um catálogo de produtos, visualizar informações dos produtos e adicionar itens a um carrinho de compras.
+A aplicação permite que o usuário navegue pelo catálogo de produtos, visualize os itens disponíveis e adicione produtos ao carrinho de compras.
 
-O projeto foi desenvolvido utilizando:
-
-- React Native
-- Expo
-- TypeScript
-- React Navigation
-- Context API
-- JavaScript/TypeScript
-- npm
+O projeto foi desenvolvido com foco em uma interface simples e intuitiva, permitindo demonstrar na prática conceitos importantes do desenvolvimento mobile.
 
 ---
 
 # 🎯 Objetivo
 
-O objetivo do PetFácil é disponibilizar uma interface simples e intuitiva para que usuários possam:
+O principal objetivo do PetFácil é oferecer uma aplicação simples para consulta e seleção de produtos para pets.
 
-- Visualizar produtos disponíveis;
-- Navegar pelo catálogo;
+Por meio da aplicação, o usuário pode:
+
+- Visualizar o catálogo de produtos;
 - Consultar informações dos produtos;
 - Adicionar produtos ao carrinho;
-- Visualizar os produtos adicionados;
+- Visualizar os produtos adicionados ao carrinho;
 - Alterar a quantidade dos produtos;
 - Remover produtos do carrinho;
 - Visualizar o valor total da compra.
 
-A proposta é manter o sistema simples, permitindo demonstrar os principais conceitos de desenvolvimento de aplicações mobile.
+---
+
+# ✨ Funcionalidades
+
+## 🛍️ Catálogo de produtos
+
+A aplicação apresenta uma lista de produtos disponíveis para o usuário.
+
+Cada produto possui informações que permitem sua identificação e seleção.
+
+O usuário pode navegar pelo catálogo e escolher os produtos que deseja adicionar ao carrinho.
+
+---
+
+## 🛒 Carrinho de compras
+
+O usuário pode adicionar produtos ao carrinho.
+
+No carrinho é possível:
+
+- Visualizar os produtos selecionados;
+- Alterar a quantidade de um produto;
+- Remover produtos;
+- Visualizar o total da compra.
+
+O estado do carrinho é compartilhado entre as telas da aplicação por meio da **Context API**.
+
+---
+
+## 📊 Gerenciamento do estado
+
+O gerenciamento do carrinho é realizado de forma centralizada utilizando o `CartContext`.
+
+Isso permite que diferentes telas tenham acesso às mesmas informações do carrinho.
+
+As principais operações disponibilizadas pelo contexto são:
+
+- Adicionar produto;
+- Remover produto;
+- Alterar quantidade;
+- Consultar produtos;
+- Calcular o valor total.
 
 ---
 
@@ -45,37 +79,53 @@ A proposta é manter o sistema simples, permitindo demonstrar os principais conc
 
 ## React Native
 
-Framework utilizado para desenvolvimento da aplicação mobile.
+Framework utilizado para o desenvolvimento da aplicação mobile.
 
-Permite desenvolver aplicações para Android e iOS utilizando uma base de código compartilhada.
+O React Native permite criar aplicações para dispositivos móveis utilizando uma base de código compartilhada.
+
+---
 
 ## Expo
 
-Plataforma utilizada para facilitar o desenvolvimento, execução e testes da aplicação React Native.
+O Expo é utilizado para facilitar o desenvolvimento e a execução da aplicação React Native.
 
-O projeto utiliza uma versão do **Expo SDK 54**.
+### Versão utilizada
+
+O projeto utiliza:
+
+**Expo SDK 54**
+
+---
 
 ## TypeScript
 
-Linguagem utilizada no projeto para adicionar tipagem estática ao JavaScript.
+O projeto utiliza TypeScript para adicionar tipagem estática ao JavaScript.
+
+Isso contribui para maior segurança e organização durante o desenvolvimento.
+
+---
 
 ## React Navigation
 
-Biblioteca utilizada para realizar a navegação entre as telas da aplicação.
+A biblioteca React Navigation é utilizada para controlar a navegação entre as telas da aplicação.
+
+---
 
 ## Context API
 
-Utilizada para compartilhar o estado do carrinho entre diferentes telas da aplicação.
+A Context API do React é utilizada para compartilhar o estado do carrinho entre diferentes componentes e telas.
+
+---
 
 ## npm
 
-Gerenciador de pacotes utilizado para instalar e gerenciar as dependências do projeto.
+O npm é utilizado para instalar e gerenciar as dependências do projeto.
 
 ---
 
 # 📂 Estrutura do projeto
 
-A estrutura principal do projeto é semelhante a:
+A estrutura principal do projeto está organizada da seguinte maneira:
 
     petfacil/
     │
@@ -110,264 +160,317 @@ A estrutura principal do projeto é semelhante a:
 
 ---
 
-# 🖥️ Principais partes do projeto
+# 📁 Principais diretórios e arquivos
 
-## App.tsx
+## `App.tsx`
 
 É o componente principal da aplicação.
 
-É responsável por iniciar a aplicação e configurar a estrutura principal de navegação.
+É responsável pela inicialização da estrutura principal do aplicativo e pela configuração da navegação.
 
 ---
 
-# 🧭 Navegação
+## `index.ts`
 
-A navegação da aplicação é realizada utilizando o **React Navigation**.
+É o ponto de entrada da aplicação.
 
-A aplicação possui diferentes telas que podem ser acessadas através da navegação configurada no projeto.
-
-A estrutura de navegação foi criada para permitir que o usuário navegue entre as funcionalidades do aplicativo.
+É utilizado para iniciar o aplicativo e carregar o componente principal.
 
 ---
 
-# 🛍️ Catálogo
+## `navigation/`
 
-A tela de catálogo apresenta os produtos disponíveis para o usuário.
+Contém os arquivos relacionados à configuração da navegação entre as telas.
 
-Nela é possível visualizar informações dos produtos e escolher quais itens deseja adicionar ao carrinho.
+A navegação permite que o usuário se movimente entre as diferentes partes do aplicativo.
 
-A implementação principal do catálogo está em:
+---
+
+## `screens/`
+
+Contém as telas da aplicação.
+
+Entre elas está a tela responsável pelo catálogo de produtos:
 
     screens/CatalogoScreen.tsx
 
 ---
 
-# 🛒 Carrinho
+## `src/contexts/`
 
-O carrinho é responsável por armazenar os produtos selecionados pelo usuário.
+Contém os contextos utilizados para gerenciamento de estado.
 
-O estado do carrinho é compartilhado entre as telas através do **Context API**.
-
-A implementação principal está localizada em:
+O principal contexto relacionado à funcionalidade do carrinho é:
 
     src/contexts/CartContext.tsx
 
-O contexto permite controlar operações como:
+---
 
-- Adicionar produto;
-- Remover produto;
-- Alterar quantidade;
-- Consultar produtos adicionados;
-- Calcular o total da compra.
+## `src/data/`
 
-Dessa forma, diferentes telas conseguem acessar e atualizar o mesmo carrinho.
+Contém os dados utilizados pela aplicação, incluindo os dados dos produtos apresentados no catálogo.
+
+Os produtos são armazenados localmente para fins de demonstração.
+
+---
+
+## `assets/`
+
+Contém os arquivos de imagem utilizados pela aplicação, como ícones e elementos visuais.
+
+---
+
+# 🧭 Navegação da aplicação
+
+A aplicação utiliza o **React Navigation** para realizar a navegação entre as telas.
+
+De forma simplificada, o fluxo da aplicação pode ser representado como:
+
+    Usuário
+       │
+       ▼
+    Aplicação
+       │
+       ├── Catálogo
+       │      │
+       │      └── Produtos
+       │
+       └── Carrinho
+              │
+              ├── Produtos selecionados
+              ├── Alteração de quantidade
+              ├── Remoção de produtos
+              └── Total da compra
+
+---
+
+# 🛒 Funcionamento do carrinho
+
+O carrinho utiliza um contexto global para manter os produtos selecionados pelo usuário.
+
+O fluxo funciona da seguinte maneira:
+
+    Usuário acessa o catálogo
+              ↓
+    Seleciona um produto
+              ↓
+    Produto é adicionado ao carrinho
+              ↓
+    CartContext atualiza o estado
+              ↓
+    Usuário acessa o carrinho
+              ↓
+    Produtos selecionados são apresentados
+              ↓
+    Usuário pode alterar quantidades
+              ↓
+    Usuário pode remover produtos
+              ↓
+    Sistema apresenta o total
+
+---
+
+# 🧠 Context API
+
+O `CartContext` centraliza as informações relacionadas ao carrinho.
+
+A utilização de um contexto evita que cada tela tenha uma cópia independente do carrinho.
+
+De forma conceitual:
+
+    CartContext
+         │
+         ├── Lista de produtos
+         │
+         ├── Adicionar produto
+         │
+         ├── Remover produto
+         │
+         ├── Alterar quantidade
+         │
+         └── Calcular total
+                  │
+                  ▼
+            Telas da aplicação
+
+Dessa forma, quando o usuário adiciona ou remove um produto, as informações podem ser utilizadas pelas diferentes telas que dependem do carrinho.
 
 ---
 
 # 📦 Dados dos produtos
 
-Os dados utilizados pelo catálogo ficam organizados dentro de:
+Os produtos utilizados no catálogo são mantidos localmente no projeto.
+
+Essa abordagem foi escolhida para manter o escopo do projeto simples e adequado à proposta acadêmica.
+
+Não existe, atualmente, uma API externa ou banco de dados responsável pelo armazenamento dos produtos.
+
+Os dados ficam organizados no diretório:
 
     src/data/
 
-Essa estrutura permite separar os dados da lógica da interface.
+---
 
-Atualmente, o projeto utiliza dados locais para representar os produtos.
+# 💻 Requisitos para execução
+
+Para executar o projeto é necessário ter instalado:
+
+- Node.js;
+- npm;
+- Expo;
+- Expo Go, caso o aplicativo seja executado em um celular.
+
+Não é necessário instalar um banco de dados para executar o projeto.
 
 ---
 
-# 💻 Requisitos para executar o projeto
+# 🟢 1. Instalar o Node.js
 
-Antes de começar, é necessário instalar alguns programas.
+O Node.js é necessário para executar o npm e as ferramentas utilizadas pelo Expo.
 
-## 1. Node.js
-
-O projeto utiliza Node.js para executar o npm e as ferramentas do Expo.
-
-Recomenda-se utilizar uma versão compatível com o projeto.
-
-Para verificar se o Node.js está instalado:
+Para verificar se o Node.js já está instalado, abra um terminal e execute:
 
     node --version
 
-Exemplo:
+Também é possível verificar a versão do npm:
 
-    v24.x.x
+    npm --version
 
----
-
-# 📱 2. Expo Go
-
-Para testar o aplicativo diretamente no celular, é necessário instalar o aplicativo **Expo Go**.
-
-No Android:
-
-1. Abra a Google Play Store;
-2. Procure por Expo Go;
-3. Instale o aplicativo.
-
-No iPhone:
-
-1. Abra a App Store;
-2. Procure por Expo Go;
-3. Instale o aplicativo.
-
-É importante observar que a versão do Expo Go instalada no celular precisa ser compatível com o SDK utilizado pelo projeto.
+Caso os comandos não sejam reconhecidos, é necessário instalar o Node.js antes de continuar.
 
 ---
 
-# 📥 Como baixar o projeto
+# 📥 2. Instalar as dependências
 
-Abra o terminal e navegue até a pasta onde deseja armazenar o projeto.
+Depois de obter o projeto, abra um terminal dentro da pasta `petfacil`.
 
-Exemplo:
-
-    cd C:\Users\SEU_USUARIO\Documentos\Workspaces
-
-Depois execute:
-
-    git clone https://github.com/nataliatviana/petfacil.git
-
-Entre na pasta do projeto:
-
-    cd petfacil
-
----
-
-# 📦 Instalação das dependências
-
-Depois de clonar o projeto, é necessário instalar todas as dependências.
-
-Dentro da pasta `petfacil`, execute:
+Execute:
 
     npm install
 
-O npm irá ler o arquivo:
+Esse comando irá instalar todas as dependências especificadas no arquivo:
 
     package.json
-
-e instalar todas as dependências necessárias.
 
 Após a instalação, será criada a pasta:
 
     node_modules
 
-Essa pasta não precisa ser enviada para o GitHub.
-
-Ela é criada localmente através do `npm install`.
+Essa pasta contém as bibliotecas utilizadas pelo projeto.
 
 ---
 
-# 🔍 Verificando o projeto
+# 🔍 3. Verificar se o projeto está configurado corretamente
 
-Depois de instalar as dependências, é recomendado executar:
+Após instalar as dependências, recomenda-se executar:
 
     npx expo-doctor
 
-O comando verifica se existem problemas conhecidos de configuração ou incompatibilidade entre as dependências do projeto.
+O comando verifica a configuração do projeto e suas dependências.
 
-O resultado esperado é algo semelhante a:
+Em uma instalação correta, o resultado deverá indicar que as verificações foram concluídas sem problemas.
+
+Exemplo:
 
     18/18 checks passed. No issues detected!
 
-Caso apareçam avisos de vulnerabilidades do npm, isso não significa necessariamente que o projeto não possa ser executado.
-
-Por exemplo:
-
-    24 vulnerabilities
-
-significa que algumas dependências possuem vulnerabilidades conhecidas.
-
-Para consultar os detalhes:
-
-    npm audit
-
-Não execute automaticamente:
-
-    npm audit fix --force
-
-sem analisar antes, pois esse comando pode atualizar dependências para versões incompatíveis e quebrar o projeto.
-
 ---
 
-# ▶️ Como executar o projeto
+# ▶️ 4. Executar o projeto
 
 Depois de instalar as dependências, execute:
 
     npx expo start
 
-O Expo iniciará o Metro Bundler.
+O Expo irá iniciar o **Metro Bundler**.
 
-Será exibido um QR Code no terminal.
+No terminal será exibido um QR Code.
 
-Também aparecerá algo semelhante a:
+Também será exibido um endereço semelhante a:
 
-    › Scan the QR code above to open in Expo Go.
-    › Metro: exp://192.168.x.x:8081
-
----
-
-# 📱 Executando no celular
-
-Para abrir o projeto no celular:
-
-1. Instale o Expo Go;
-2. Conecte o computador e o celular à mesma rede Wi-Fi;
-3. Execute:
-
-       npx expo start
-
-4. Aguarde o QR Code aparecer;
-5. Abra o Expo Go no celular;
-6. Escaneie o QR Code.
-
-O aplicativo deverá ser carregado no celular.
+    exp://192.168.x.x:8081
 
 ---
 
-# 🍎 Observação importante para iPhone
+# 📱 5. Executar no celular utilizando Expo Go
 
-O iPhone utiliza a versão atual disponível do Expo Go na App Store.
+Para executar o aplicativo diretamente em um celular:
 
-Por isso, pode acontecer de o projeto utilizar um SDK antigo e o Expo Go instalado no iPhone utilizar um SDK mais novo.
+### Passo 1
 
-Nesse caso, pode aparecer uma mensagem semelhante a:
+Instale o aplicativo **Expo Go** no celular.
 
-    Project is incompatible with this version of Expo Go
+### Passo 2
 
-Isso acontece porque o Expo Go atual pode não ser compatível com o SDK utilizado pelo projeto.
+Conecte o computador e o celular à mesma rede Wi-Fi.
 
-Como o projeto utiliza **Expo SDK 54**, é importante utilizar uma versão do Expo Go compatível com esse SDK.
+### Passo 3
 
-No iOS, não é possível simplesmente instalar uma versão antiga do Expo Go pela App Store.
-
-Por esse motivo, caso o Expo Go do iPhone esteja incompatível, recomenda-se testar o projeto em um ambiente compatível, como:
-
-- Android com uma versão compatível do Expo Go;
-- Simulador iOS;
-- Ou realizar uma atualização planejada do projeto para uma versão mais recente do Expo.
-
----
-
-# 🤖 Executando no Android
-
-Caso o computador tenha um ambiente Android configurado, é possível executar:
-
-    npx expo start --android
-
-Também é possível iniciar normalmente:
+Na pasta do projeto execute:
 
     npx expo start
 
-e utilizar o QR Code pelo Expo Go no Android.
+### Passo 4
+
+O terminal apresentará um QR Code.
+
+### Passo 5
+
+Abra o Expo Go no celular.
+
+### Passo 6
+
+Escaneie o QR Code apresentado pelo Expo.
+
+### Passo 7
+
+Aguarde o carregamento da aplicação.
+
+Depois disso, o PetFácil deverá ser exibido no celular.
 
 ---
 
-# 🌐 Executando no navegador
+# 🤖 Execução no Android
 
-O projeto também pode ser executado na web caso as dependências de suporte web estejam configuradas.
+Também é possível executar o projeto em um dispositivo Android.
 
-Execute:
+Com um dispositivo Android configurado ou utilizando o Expo Go, execute:
+
+    npx expo start
+
+Depois escaneie o QR Code utilizando o Expo Go.
+
+Também é possível utilizar:
+
+    npx expo start --android
+
+caso exista um ambiente Android configurado no computador.
+
+---
+
+# 🍎 Execução no iOS
+
+No iPhone, o aplicativo pode ser executado utilizando o Expo Go, desde que a versão do Expo Go instalada seja compatível com a versão do Expo SDK utilizada pelo projeto.
+
+Este projeto utiliza:
+
+    Expo SDK 54
+
+Por isso, caso o Expo Go instalado no iPhone seja de uma versão incompatível, poderá aparecer a mensagem:
+
+    Project is incompatible with this version of Expo Go
+
+Essa mensagem indica incompatibilidade entre a versão do SDK utilizada pelo projeto e a versão do Expo Go instalada no dispositivo.
+
+Nesse cenário, a execução pode ser realizada em um ambiente compatível, como um dispositivo Android com uma versão compatível do Expo Go ou um simulador iOS adequado.
+
+---
+
+# 🌐 Execução na Web
+
+O projeto também pode ser executado no navegador caso as dependências de suporte à Web estejam instaladas.
+
+Para iniciar:
 
     npx expo start --web
 
@@ -375,11 +478,11 @@ ou:
 
     npm run web
 
-Caso o Expo informe que faltam dependências para web, execute:
+Caso o Expo informe que as dependências necessárias para Web não estão instaladas, execute:
 
     npx expo install react-dom react-native-web
 
-Depois tente novamente:
+Depois:
 
     npx expo start --web
 
@@ -387,105 +490,80 @@ Depois tente novamente:
 
 # 🧹 Limpando o cache
 
-Caso ocorram problemas estranhos relacionados ao Metro Bundler, pode ser útil limpar o cache.
-
-Execute:
+Caso ocorram problemas durante a execução relacionados ao cache do Expo ou Metro Bundler, pode ser utilizado:
 
     npx expo start --clear
 
-Depois disso, o Expo será iniciado novamente com o cache limpo.
+Esse comando inicia o projeto limpando o cache utilizado pelo Expo.
 
 ---
 
-# 🔄 Fluxo recomendado para executar o projeto do zero
+# 🔄 Passo a passo completo para executar o projeto
 
-Para uma pessoa que acabou de baixar o projeto, o processo recomendado é:
+Para uma pessoa que nunca executou o projeto anteriormente, basta seguir os passos abaixo.
 
-## 1. Clonar o repositório
+## Passo 1 — Abrir o terminal
 
-    git clone https://github.com/nataliatviana/petfacil.git
+Abra o terminal do computador.
 
-## 2. Entrar na pasta
+Pode ser utilizado:
 
-    cd petfacil
+- Terminal do VS Code;
+- PowerShell;
+- Prompt de Comando;
+- Outro terminal compatível.
 
-## 3. Instalar dependências
+---
+
+## Passo 2 — Acessar a pasta do projeto
+
+Entre na pasta onde o projeto está localizado.
+
+Exemplo:
+
+    cd C:\Users\SEU_USUARIO\Documentos\Workspaces\petfacil
+
+---
+
+## Passo 3 — Instalar as dependências
+
+Execute:
 
     npm install
 
-## 4. Verificar o projeto
+Aguarde a instalação terminar.
+
+---
+
+## Passo 4 — Verificar o projeto
+
+Execute:
 
     npx expo-doctor
 
-## 5. Iniciar o Expo
+Se as verificações forem concluídas sem problemas, continue.
+
+---
+
+## Passo 5 — Iniciar o projeto
+
+Execute:
 
     npx expo start
 
-## 6. Abrir no celular
+Aguarde o Expo iniciar.
 
-Escaneie o QR Code utilizando o Expo Go.
+---
+
+## Passo 6 — Abrir no celular
+
+Abra o Expo Go no celular e escaneie o QR Code exibido no terminal.
+
+O computador e o celular devem estar conectados à mesma rede Wi-Fi.
 
 ---
 
 # 🧪 Comandos úteis
-
-## Iniciar o projeto
-
-    npm start
-
-ou:
-
-    npx expo start
-
----
-
-## Iniciar no Android
-
-    npm run android
-
-ou:
-
-    npx expo start --android
-
----
-
-## Iniciar no iOS
-
-    npm run ios
-
-ou:
-
-    npx expo start --ios
-
----
-
-## Iniciar na Web
-
-    npm run web
-
-ou:
-
-    npx expo start --web
-
----
-
-## Limpar cache
-
-    npx expo start --clear
-
----
-
-## Verificar dependências
-
-    npx expo-doctor
-
----
-
-## Verificar versão do Expo
-
-    npx expo --version
-
----
 
 ## Verificar versão do Node.js
 
@@ -499,327 +577,185 @@ ou:
 
 ---
 
-# 🔧 Configuração do projeto
-
-O arquivo:
-
-    app.json
-
-contém as principais configurações do aplicativo Expo.
-
-Entre outras informações, ele define:
-
-- Nome do aplicativo;
-- Slug;
-- Versão;
-- Orientação da tela;
-- Ícone;
-- Configurações para iOS;
-- Configurações para Android;
-- Configurações para Web.
-
----
-
-# 📋 package.json
-
-O arquivo `package.json` contém as informações do projeto e suas dependências.
-
-Exemplo das principais dependências utilizadas:
-
-    {
-      "dependencies": {
-        "@react-navigation/native": "^7.3.18",
-        "@react-navigation/native-stack": "^7.18.10",
-        "expo": "~54.0.36",
-        "expo-status-bar": "~3.0.9",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-safe-area-context": "~5.6.0",
-        "react-native-screens": "~4.16.0"
-      }
-    }
-
-O `package-lock.json` registra as versões específicas das dependências instaladas.
-
-Por isso, os dois arquivos devem ser mantidos no repositório.
-
----
-
-# 🌳 Git e branches
-
-O projeto utiliza Git para controle de versão.
-
-A branch principal é:
-
-    main
-
-Para criar uma nova branch para desenvolver uma funcionalidade:
-
-    git checkout -b feature/nome-da-funcionalidade
-
-Para verificar a branch atual:
-
-    git branch
-
-Para verificar alterações:
-
-    git status
-
----
-
-# 💾 Salvando alterações
-
-Depois de realizar alterações no código:
-
-## 1. Verificar alterações
-
-    git status
-
-## 2. Adicionar arquivos
-
-    git add .
-
-## 3. Criar commit
-
-    git commit -m "feat: descrição da alteração"
-
-## 4. Enviar para o GitHub
-
-    git push origin nome-da-branch
-
----
-
-# 🔄 Atualizando o projeto
-
-Antes de começar a trabalhar, é recomendado atualizar a branch:
-
-    git pull
-
-Se estiver trabalhando em uma branch específica:
-
-    git pull origin nome-da-branch
-
----
-
-# 🤝 Pull Request
-
-Quando uma funcionalidade estiver concluída:
-
-1. Criar uma branch para a funcionalidade;
-2. Desenvolver a funcionalidade;
-3. Testar localmente;
-4. Fazer `git add`;
-5. Fazer `git commit`;
-6. Fazer `git push`;
-7. Abrir um Pull Request no GitHub;
-8. Solicitar revisão dos integrantes do projeto;
-9. Após aprovação, realizar o merge na `main`.
-
----
-
-# 🧑‍💻 Exemplo completo de desenvolvimento
-
-Supondo que seja necessário criar uma funcionalidade chamada `catalogo`.
-
-Criar a branch:
-
-    git checkout -b feature/catalogo
-
-Desenvolver a funcionalidade.
-
-Verificar alterações:
-
-    git status
-
-Adicionar os arquivos:
-
-    git add .
-
-Criar o commit:
-
-    git commit -m "feat: implementa catalogo"
-
-Enviar para o GitHub:
-
-    git push origin feature/catalogo
-
-Depois disso, abrir um Pull Request para a branch `main`.
-
----
-
-# ⚠️ Problemas comuns
-
-## "Project is incompatible with this version of Expo Go"
-
-Significa que a versão do Expo Go instalada no dispositivo não é compatível com o SDK do projeto.
-
-Primeiro verifique a versão utilizada pelo projeto:
+## Verificar versão do Expo
 
     npx expo --version
 
-Também é possível verificar o `package.json`.
-
-No caso deste projeto, a versão principal utilizada é:
-
-    Expo SDK 54
-
 ---
 
-# ⚠️ "PluginError: Failed to resolve plugin"
-
-Esse erro geralmente está relacionado a uma configuração de plugin no `app.json` ou a uma dependência que não está instalada corretamente.
-
-Caso aconteça após alterar dependências:
-
-1. Verifique o `package.json`;
-2. Execute:
-
-       npm install
-
-3. Execute:
-
-       npx expo-doctor
-
-4. Se necessário, limpe o cache:
-
-       npx expo start --clear
-
----
-
-# ⚠️ Problemas depois de instalar dependências
-
-Caso o projeto apresente comportamentos inesperados após alterações nas dependências, pode ser necessário reinstalar as dependências.
-
-No Windows:
-
-    rmdir /s /q node_modules
-
-Depois:
+## Instalar dependências
 
     npm install
 
-Caso o comando acima não funcione no PowerShell, também é possível excluir manualmente a pasta `node_modules`.
+---
 
-Depois execute:
-
-    npm install
-
-E novamente:
+## Verificar dependências e configuração
 
     npx expo-doctor
 
 ---
 
-# ⚠️ Não alterar versões do Expo sem necessidade
+## Iniciar aplicação
 
-O projeto utiliza versões específicas de React Native, React e Expo.
-
-Portanto, não é recomendado executar comandos como:
-
-    npm install expo@latest
-
-ou atualizar várias dependências manualmente sem verificar a compatibilidade.
-
-Alterações de versão do Expo podem exigir atualização de:
-
-- React;
-- React Native;
-- Expo Router;
-- React Navigation;
-- Plugins;
-- Dependências nativas;
-- Configuração do `app.json`.
-
-Sempre que houver necessidade de atualização, deve ser feito um processo de upgrade planejado.
+    npx expo start
 
 ---
 
-# 📊 Arquitetura simplificada
+## Iniciar aplicação no Android
 
-A estrutura lógica do aplicativo pode ser representada da seguinte maneira:
-
-    Usuário
-       │
-       ▼
-    Aplicação Mobile
-       │
-       ├── Navegação
-       │
-       ├── Catálogo
-       │      │
-       │      └── Produtos
-       │
-       └── Carrinho
-              │
-              ├── Adicionar produto
-              ├── Remover produto
-              ├── Alterar quantidade
-              └── Calcular total
+    npx expo start --android
 
 ---
 
-# 🛒 Fluxo do carrinho
+## Iniciar aplicação no iOS
 
-O funcionamento básico do carrinho é:
-
-    Usuário acessa o catálogo
-              ↓
-    Escolhe um produto
-              ↓
-    Adiciona ao carrinho
-              ↓
-    Produto é armazenado no CartContext
-              ↓
-    Usuário acessa o carrinho
-              ↓
-    Visualiza os produtos
-              ↓
-    Pode alterar quantidades
-              ↓
-    Pode remover produtos
-              ↓
-    Sistema calcula o total
+    npx expo start --ios
 
 ---
 
-# 🧠 Context API
+## Iniciar aplicação na Web
 
-O `CartContext` é utilizado para evitar que cada tela tenha uma cópia independente do carrinho.
-
-A ideia é centralizar o estado.
-
-Exemplo conceitual:
-
-    CartContext
-         │
-         ├── produtos
-         ├── adicionarProduto()
-         ├── removerProduto()
-         ├── alterarQuantidade()
-         └── calcularTotal()
-              │
-              ▼
-          Telas do app
-
-Assim, qualquer tela que utilize o contexto pode acessar as informações atualizadas do carrinho.
+    npx expo start --web
 
 ---
 
-# 🔐 Segurança
+## Limpar cache
 
-Este projeto é acadêmico e não possui, atualmente, um sistema completo de autenticação ou processamento real de pagamentos.
-
-Os dados dos produtos são utilizados localmente na aplicação.
-
-Por isso, o projeto não deve ser considerado uma aplicação de e-commerce pronta para produção.
+    npx expo start --clear
 
 ---
 
-# 🚀 Possíveis melhorias futuras
+# ⚙️ Configuração do Expo
 
-Algumas funcionalidades que poderiam ser adicionadas futuramente:
+As configurações principais da aplicação estão no arquivo:
 
-- Login e cadastro de usuários;
+    app.json
+
+Esse arquivo contém informações como:
+
+- Nome do aplicativo;
+- Identificação do projeto;
+- Versão;
+- Orientação da tela;
+- Ícone;
+- Configurações do Android;
+- Configurações do iOS;
+- Configurações da Web.
+
+---
+
+# 📋 Dependências principais
+
+O projeto utiliza as seguintes tecnologias e bibliotecas principais:
+
+    Expo SDK 54
+    React 19.1.0
+    React Native 0.81.5
+    TypeScript
+    React Navigation
+    React Native Screens
+    React Native Safe Area Context
+    Expo Status Bar
+
+As versões específicas das dependências estão registradas nos arquivos:
+
+    package.json
+
+e:
+
+    package-lock.json
+
+---
+
+# 🗄️ Banco de dados
+
+O projeto não necessita de banco de dados para ser executado.
+
+Os produtos utilizados na aplicação são dados locais armazenados no próprio projeto.
+
+Portanto, não é necessário:
+
+- Configurar MongoDB;
+- Configurar MySQL;
+- Configurar PostgreSQL;
+- Criar banco de dados;
+- Configurar credenciais;
+- Configurar variáveis de ambiente.
+
+Basta instalar as dependências e executar o projeto.
+
+---
+
+# 🔐 Autenticação
+
+O projeto não possui, em sua versão atual, um sistema de autenticação com usuário e senha.
+
+A aplicação foi desenvolvida com foco nas funcionalidades de catálogo e carrinho.
+
+---
+
+# 💳 Pagamentos
+
+O projeto não possui integração com sistemas reais de pagamento.
+
+O carrinho é utilizado para demonstrar a seleção de produtos e o cálculo do valor total.
+
+---
+
+# 🌐 API
+
+A aplicação não depende de uma API externa para apresentar o catálogo.
+
+Os dados utilizados na demonstração são armazenados localmente no projeto.
+
+Essa decisão mantém a aplicação simples e facilita sua execução durante a apresentação e avaliação.
+
+---
+
+# 🧩 Arquitetura simplificada
+
+A arquitetura da aplicação pode ser representada da seguinte maneira:
+
+    React Native / Expo
+             │
+             ▼
+        Interface
+             │
+       ┌─────┴─────┐
+       ▼           ▼
+    Catálogo     Carrinho
+       │           │
+       ▼           ▼
+    Produtos    CartContext
+       │           │
+       └─────┬─────┘
+             ▼
+        Dados locais
+
+---
+
+# 📌 Escopo atual
+
+O escopo atual do projeto contempla:
+
+- Aplicação mobile;
+- Catálogo de produtos;
+- Navegação entre telas;
+- Carrinho de compras;
+- Adição de produtos;
+- Remoção de produtos;
+- Alteração de quantidade;
+- Cálculo do total;
+- Gerenciamento de estado utilizando Context API.
+
+---
+
+# 🚀 Possíveis evoluções
+
+Como possíveis evoluções futuras do projeto, poderiam ser implementadas:
+
+- Cadastro de usuários;
+- Login;
 - Banco de dados;
 - API própria;
 - Backend;
@@ -828,40 +764,111 @@ Algumas funcionalidades que poderiam ser adicionadas futuramente:
 - Favoritos;
 - Busca de produtos;
 - Filtros por categoria;
-- Integração com pagamentos;
 - Controle de estoque;
-- Cadastro de pets;
+- Integração com pagamentos;
+- Cadastro de animais;
 - Agendamento de serviços;
 - Notificações;
 - Persistência do carrinho;
 - Integração com serviços externos.
 
+Essas funcionalidades não fazem parte do escopo atual da aplicação.
+
 ---
 
-# 👩‍💻 Desenvolvimento
+# ⚠️ Solução de problemas
 
-Projeto desenvolvido para fins acadêmicos como parte da disciplina de Projeto Integrador.
+## Erro: "Project is incompatible with this version of Expo Go"
 
-O desenvolvimento utiliza práticas de:
+Esse erro ocorre quando a versão do Expo Go instalada no dispositivo não é compatível com o SDK utilizado pelo projeto.
 
-- Controle de versão com Git;
-- Desenvolvimento em branches;
-- Pull Requests;
+Verifique a versão do Expo:
+
+    npx expo --version
+
+O projeto foi desenvolvido utilizando:
+
+    Expo SDK 54
+
+Caso o Expo Go do dispositivo seja incompatível, utilize um ambiente compatível para executar o projeto.
+
+---
+
+## Erro durante a instalação das dependências
+
+Caso ocorram problemas durante o `npm install`, verifique:
+
+1. Se o Node.js está instalado;
+2. Se o terminal está aberto na pasta correta;
+3. Se existe um arquivo `package.json`;
+4. Se existe conexão com a internet.
+
+Depois tente novamente:
+
+    npm install
+
+---
+
+## Aplicação não atualiza depois de uma alteração
+
+Tente limpar o cache:
+
+    npx expo start --clear
+
+Depois abra novamente a aplicação no Expo Go.
+
+---
+
+## QR Code não funciona
+
+Verifique se:
+
+- O computador está conectado à internet;
+- O celular está conectado à mesma rede Wi-Fi;
+- O Expo está executando;
+- O Expo Go está instalado;
+- O QR Code foi escaneado corretamente.
+
+Também é possível reiniciar o Expo:
+
+    npx expo start
+
+---
+
+# 👨‍🏫 Informações para avaliação
+
+O projeto foi desenvolvido com o objetivo de demonstrar conhecimentos relacionados ao desenvolvimento de aplicações mobile.
+
+Entre os conceitos aplicados estão:
+
+- Desenvolvimento com React Native;
+- Utilização do Expo;
+- TypeScript;
 - Componentização;
-- Gerenciamento de estado;
 - Navegação entre telas;
-- Desenvolvimento mobile;
-- TypeScript.
+- Gerenciamento de estado;
+- Context API;
+- Organização de código;
+- Separação entre telas, contexto e dados;
+- Controle de dependências através do npm.
 
 ---
 
-# 📌 Resumo rápido
+# 📚 Resumo do projeto
 
-Se você já possui Node.js instalado e acabou de clonar o projeto:
+O **PetFácil** é uma aplicação mobile desenvolvida em React Native utilizando Expo e TypeScript.
 
-    git clone https://github.com/nataliatviana/petfacil.git
+A aplicação apresenta um catálogo de produtos para animais de estimação e permite que o usuário selecione produtos e gerencie um carrinho de compras.
 
-    cd petfacil
+O estado do carrinho é centralizado utilizando Context API, permitindo que as diferentes telas compartilhem as informações dos produtos selecionados.
+
+Os produtos utilizados na aplicação são armazenados localmente, não sendo necessário configurar banco de dados ou API externa para executar o projeto.
+
+---
+
+# 🚀 Execução rápida
+
+Para executar o projeto de forma resumida:
 
     npm install
 
@@ -869,26 +876,14 @@ Se você já possui Node.js instalado e acabou de clonar o projeto:
 
     npx expo start
 
-Depois:
-
-1. Abra o Expo Go;
-2. Escaneie o QR Code;
-3. Aguarde o aplicativo carregar.
-
----
-
-# 📚 Observação
-
-O projeto deve ser executado utilizando as versões de dependências presentes no `package.json` e registradas no `package-lock.json`.
-
-Caso outro integrante esteja conseguindo executar normalmente o projeto em seu dispositivo, recomenda-se evitar alterações desnecessárias nas versões das dependências.
-
-Em caso de problemas específicos de compatibilidade entre dispositivo e Expo Go, primeiro verifique a versão do SDK do projeto e a versão do Expo Go instalada no dispositivo.
+Depois, abra o **Expo Go** no celular e escaneie o QR Code apresentado.
 
 ---
 
 # 🐾 PetFácil
 
-Aplicação mobile acadêmica desenvolvida para facilitar a navegação por produtos para pets e o gerenciamento de um carrinho de compras.
+**Aplicação mobile acadêmica para catálogo de produtos e gerenciamento de carrinho para pets.**
 
-**Tecnologias principais:** React Native • Expo • TypeScript • React Navigation • Context API • Git
+### Tecnologias
+
+**React Native • Expo • TypeScript • React Navigation • Context API • npm**
