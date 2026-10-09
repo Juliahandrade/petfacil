@@ -51,10 +51,12 @@ router.post("/", authMiddleware, async (req, res) => {
             }
         }
 
-        // O usuário vem do token, não do corpo da requisição
+        // O usuário vem do token e o nome vem do produto cadastrado,
+        // não do corpo da requisição
         const dadosCompra = {
             usuario: req.usuarioId,
             produto,
+            nomeProduto: produtoExistente.nome,
             preco: Number(preco)
         };
 

@@ -7,6 +7,7 @@ const connectDatabase = require("./src/config/database");
 const userRoutes = require("./src/routes/userRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const compraRoutes = require("./src/routes/compraRoutes");
+const recomendacaoRoutes = require("./src/routes/recomendacaoRoutes");
 const errorMiddleware = require("./src/middlewares/errorMiddleware");
 
 const app = express();
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/compras", compraRoutes);
+app.use("/api/recomendacoes", recomendacaoRoutes);
 
 // Tratar rotas inexistentes
 app.use((req, res) => {

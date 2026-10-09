@@ -11,6 +11,10 @@ const compraSchema = new mongoose.Schema({
         ref: "Product",
         required: true
     },
+    nomeProduto: {
+        type: String,
+        required: true
+    },
     preco: {
         type: Number,
         required: true
