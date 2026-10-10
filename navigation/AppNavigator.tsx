@@ -15,7 +15,7 @@ export type RootStackParamList = {
     Carrinho: undefined;
     HistoricoCompras: undefined;
     DetalhesProduto: {
-        produtoId: number;
+    produtoId: string;
     };
 
     };

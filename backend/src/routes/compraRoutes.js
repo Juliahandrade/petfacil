@@ -7,37 +7,36 @@ const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-// REGISTRAR COMPRA — exige autenticação
 router.post("/", authMiddleware, async (req, res) => {
-    try {
-        const { produto, preco, dataCompra } = req.body;
+    const session = await mongoose.startSession();
 
-        // Validar os dados da compra
-        if (
-            !mongoose.isValidObjectId(produto) ||
-            preco === undefined ||
-            preco === null ||
-            preco === "" ||
-            !Number.isFinite(Number(preco)) ||
-            Number(preco) < 0
-        ) {
+    try {
+        const { itens, produto, quantidade = 1, dataCompra } = req.body;
+
+        const listaItens = Array.isArray(itens)
+            ? itens
+            : [{ produto, quantidade }];
+
+        if (listaItens.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: "Informe um produto válido e um preço válido."
+                message: "O pedido precisa ter pelo menos um produto."
             });
         }
 
-        // Verificar se o produto existe
-        const produtoExistente = await Product.findById(produto);
-
-        if (!produtoExistente) {
-            return res.status(404).json({
-                success: false,
-                message: "Produto não encontrado."
-            });
+        for (const item of listaItens) {
+            if (
+                !mongoose.isValidObjectId(item.produto) ||
+                !Number.isInteger(Number(item.quantidade ?? 1)) ||
+                Number(item.quantidade ?? 1) < 1
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Informe produtos e quantidades válidos."
+                });
+            }
         }
 
-        // Validar a data, caso tenha sido informada
         let dataValida;
 
         if (dataCompra !== undefined) {
@@ -51,51 +50,85 @@ router.post("/", authMiddleware, async (req, res) => {
             }
         }
 
-        // O usuário vem do token e o nome vem do produto cadastrado,
-        // não do corpo da requisição
-        const dadosCompra = {
-            usuario: req.usuarioId,
-            produto,
-            nomeProduto: produtoExistente.nome,
-            preco: Number(preco)
-        };
+        let comprasRegistradas = [];
 
-        if (dataValida) {
-            dadosCompra.dataCompra = dataValida;
-        }
+        await session.withTransaction(async () => {
+            const dadosCompras = [];
 
-        const compra = await Compra.create(dadosCompra);
+            for (const item of listaItens) {
+                const produtoExistente = await Product.findById(
+                    item.produto
+                ).session(session);
+
+                if (!produtoExistente) {
+                    throw new Error(`Produto não encontrado: ${item.produto}`);
+                }
+
+                const precoPromocional = produtoExistente.precoPromocional;
+
+                const precoUnitario =
+                    precoPromocional != null &&
+                    precoPromocional < produtoExistente.precoAtual
+                        ? precoPromocional
+                        : produtoExistente.precoAtual;
+
+                const dadosCompra = {
+                    usuario: req.usuarioId,
+                    produto: produtoExistente._id,
+                    nomeProduto: produtoExistente.nome,
+                    quantidade: Number(item.quantidade ?? 1),
+                    preco: precoUnitario
+                };
+
+                if (dataValida) {
+                    dadosCompra.dataCompra = dataValida;
+                }
+
+                dadosCompras.push(dadosCompra);
+            }
+
+            comprasRegistradas = await Compra.insertMany(
+                dadosCompras,
+                { session }
+            );
+        });
 
         return res.status(201).json({
             success: true,
-            message: "Compra registrada com sucesso.",
-            compra
+            message: "Pedido registrado com sucesso.",
+            compras: comprasRegistradas
         });
-
     } catch (error) {
-        console.error("Erro ao registrar compra:", error.message);
+        console.error("Erro ao registrar pedido:", error.message);
 
-        return res.status(500).json({
+        const produtoNaoEncontrado = error.message.startsWith(
+            "Produto não encontrado:"
+        );
+
+        return res.status(produtoNaoEncontrado ? 404 : 500).json({
             success: false,
-            message: "Erro ao registrar compra."
+            message: produtoNaoEncontrado
+                ? "Um dos produtos do pedido não foi encontrado."
+                : "Erro ao registrar pedido."
         });
+    } finally {
+        await session.endSession();
     }
 });
 
-// LISTAR SOMENTE AS COMPRAS DO USUÁRIO AUTENTICADO
 router.get("/", authMiddleware, async (req, res) => {
     try {
         const compras = await Compra.find({
             usuario: req.usuarioId
         })
             .populate("usuario", "nomeCompleto login")
-            .populate("produto");
+            .populate("produto")
+            .sort({ dataCompra: -1 });
 
         return res.status(200).json({
             success: true,
             compras
         });
-
     } catch (error) {
         console.error("Erro ao buscar compras:", error.message);
 

@@ -1,5 +1,6 @@
+
 export type Produto = {
-  id: number;
+  id: string;
   nome: string;
   precoAtual: number;
   precoPromocional: number;
@@ -10,7 +11,7 @@ export type Produto = {
 
 export const produtosMock: Produto[] = [
   {
-    id: 1,
+    id: "1",
     nome: "Ração Premium para Cães",
     precoAtual: 89.9,
     precoPromocional: 69.9,
@@ -19,7 +20,7 @@ export const produtosMock: Produto[] = [
     dataValidade: "20/12/2027",
   },
   {
-    id: 2,
+    id: "2",
     nome: "Brinquedo Mordedor",
     precoAtual: 29.9,
     precoPromocional: 24.9,
@@ -28,7 +29,7 @@ export const produtosMock: Produto[] = [
     dataValidade: "Não se aplica",
   },
   {
-    id: 3,
+    id: "3",
     nome: "Shampoo Pet Neutro",
     precoAtual: 35.9,
     precoPromocional: 29.9,
@@ -37,7 +38,7 @@ export const produtosMock: Produto[] = [
     dataValidade: "15/08/2028",
   },
   {
-    id: 4,
+    id: "4",
     nome: "Areia Higiênica para Gatos",
     precoAtual: 42.9,
     precoPromocional: 42.9,

@@ -1,28 +1,63 @@
+
+import { useEffect, useState } from "react";
+
 import {
+    ActivityIndicator,
     Pressable,
     ScrollView,
     StyleSheet,
     Text,
     View,
-    } from "react-native";
+} from "react-native";
 
-    import { useNavigation, useRoute } from "@react-navigation/native";
-    import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-    import type { RouteProp } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RouteProp } from "@react-navigation/native";
 
-    import { useCart } from "../src/contexts/CartContext";
-    import { produtosMock } from "../src/data/produtos";
-    import type { RootStackParamList } from "../navigation/AppNavigator";
-    import Assistente from "../src/components/Assistente";
-    import BotaoPrimario from "../src/components/BotaoPrimario";
+import { useCart } from "../src/contexts/CartContext";
+import type { Produto } from "../src/data/produtos";
+import { apiGet } from "../src/services/api";
+import type { RootStackParamList } from "../navigation/AppNavigator";
+import Assistente from "../src/components/Assistente";
+import BotaoPrimario from "../src/components/BotaoPrimario";
 
-    type NavigationProp =
+type NavigationProp =
     NativeStackNavigationProp<RootStackParamList>;
 
-    type DetalhesRouteProp = RouteProp<
+type DetalhesRouteProp = RouteProp<
     RootStackParamList,
     "DetalhesProduto"
-    >;
+>;
+
+type ProdutoApi = {
+    _id: string;
+    nome: string;
+    precoAtual: number;
+    precoPromocional?: number;
+    tipo: string;
+    descricao: string;
+    dataValidade?: string;
+    };
+
+    type RespostaProdutos = {
+    success: boolean;
+    produtos: ProdutoApi[];
+    };
+
+    function formatarValidade(data?: string) {
+    if (!data) {
+        return "Não se aplica";
+    }
+
+    const parteData = data.slice(0, 10);
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(parteData)) {
+        const [ano, mes, dia] = parteData.split("-");
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    return data;
+    }
 
     export default function DetalhesProdutoScreen() {
     const navigation = useNavigation<NavigationProp>();
@@ -30,15 +65,86 @@ import {
 
     const { adicionarAoCarrinho } = useCart();
 
-    const produto = produtosMock.find(
-        (item) => item.id === route.params.produtoId
-    );
+    const [produto, setProduto] = useState<Produto | null>(null);
+    const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState(false);
 
-    if (!produto) {
+    useEffect(() => {
+        let ativo = true;
+
+        async function carregarProduto() {
+        try {
+            setCarregando(true);
+            setErro(false);
+
+            const resposta = await apiGet<RespostaProdutos>(
+            "/api/products"
+            );
+
+            const produtoEncontrado = resposta.produtos.find(
+            (item) => item._id === route.params.produtoId
+            );
+
+            if (!produtoEncontrado) {
+            if (ativo) {
+                setProduto(null);
+            }
+            return;
+            }
+
+            const produtoFormatado: Produto = {
+            id: produtoEncontrado._id,
+            nome: produtoEncontrado.nome,
+            precoAtual: produtoEncontrado.precoAtual,
+            precoPromocional:
+            produtoEncontrado.precoPromocional ??
+            produtoEncontrado.precoAtual,
+            tipo: produtoEncontrado.tipo,
+            descricao: produtoEncontrado.descricao,
+            dataValidade: formatarValidade(
+            produtoEncontrado.dataValidade
+            ),
+            };
+
+            if (ativo) {
+            setProduto(produtoFormatado);
+            }
+        } catch (error) {
+            if (ativo) {
+            setErro(true);
+            }
+        } finally {
+            if (ativo) {
+            setCarregando(false);
+            }
+        }
+        }
+
+        carregarProduto();
+
+        return () => {
+        ativo = false;
+        };
+    }, [route.params.produtoId]);
+
+    if (carregando) {
+        return (
+        <View style={styles.errorContainer}>
+            <ActivityIndicator size="large" color="#2563EB" />
+            <Text style={styles.errorMessage}>
+            Carregando produto...
+            </Text>
+        </View>
+        );
+    }
+
+    if (erro || !produto) {
         return (
         <View style={styles.errorContainer}>
             <Text style={styles.errorTitle}>
-            Produto não encontrado
+            {erro
+                ? "Não foi possível carregar o produto"
+                : "Produto não encontrado"}
             </Text>
 
             <BotaoPrimario
@@ -56,10 +162,9 @@ import {
         if (!produto) {
             return;
         }
-
         adicionarAoCarrinho(produto);
         navigation.navigate("Carrinho");
-    }
+        }
 
     return (
         <View style={styles.container}>
@@ -314,6 +419,13 @@ import {
         fontSize: 22,
         fontWeight: "800",
         color: "#1E3A8A",
+        textAlign: "center",
         marginBottom: 20,
+    },
+
+    errorMessage: {
+        fontSize: 15,
+        color: "#5F6B7A",
+        marginTop: 12,
     },
 });

@@ -30,19 +30,26 @@ import {
         finalizarPedido,
     } = useCart();
 
-    function handleFinalizarPedido() {
-        finalizarPedido();
+    async function handleFinalizarPedido() {
+        const sucesso = await finalizarPedido();
 
-        Alert.alert(
-        "Pedido realizado!",
-        "Seu pedido foi registrado com sucesso.\n\nO pagamento será realizado na retirada na loja.",
-        [
-            {
-            text: "OK",
-            onPress: () => navigation.navigate("Catalogo"),
-            },
-        ]
-        );
+        if (sucesso) {
+            Alert.alert(
+            "Pedido realizado!",
+            "Seu pedido foi registrado com sucesso.\n\nO pagamento será realizado na retirada na loja.",
+            [
+                {
+                text: "OK",
+                onPress: () => navigation.navigate("Catalogo"),
+                },
+            ]
+            );
+        } else {
+            Alert.alert(
+            "Não foi possível finalizar",
+            "Verifique sua conexão e tente novamente. Se apenas parte do pedido foi registrada, os itens já registrados foram retirados do carrinho."
+            );
+        }
     }
 
     // CARRINHO VAZIO

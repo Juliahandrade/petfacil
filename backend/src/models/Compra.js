@@ -15,6 +15,12 @@ const compraSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    quantidade: {
+        type: Number,
+        required: true,
+        min: 1,
+        default: 1
+    },
     preco: {
         type: Number,
         required: true

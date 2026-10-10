@@ -1,3 +1,4 @@
+
 import {
   createContext,
   ReactNode,
@@ -6,7 +7,8 @@ import {
 } from "react";
 
 import { Produto } from "../data/produtos";
-import { comprasMock } from "../data/compras";
+import { apiPost } from "../services/api";
+import { useAuth } from "./AuthContext";
 
 type ItemCarrinho = {
   produto: Produto;
@@ -16,17 +18,15 @@ type ItemCarrinho = {
 type CartContextData = {
   itens: ItemCarrinho[];
   adicionarAoCarrinho: (produto: Produto) => void;
-  aumentarQuantidade: (produtoId: number) => void;
-  diminuirQuantidade: (produtoId: number) => void;
-  removerDoCarrinho: (produtoId: number) => void;
+  aumentarQuantidade: (produtoId: string) => void;
+  diminuirQuantidade: (produtoId: string) => void;
+  removerDoCarrinho: (produtoId: string) => void;
   calcularSubtotal: (item: ItemCarrinho) => number;
   calcularTotal: () => number;
-  finalizarPedido: () => void;
+  finalizarPedido: () => Promise<boolean>;
 };
 
-const CartContext = createContext<CartContextData | undefined>(
-  undefined
-);
+const CartContext = createContext<CartContextData | undefined>(undefined);
 
 type CartProviderProps = {
   children: ReactNode;
@@ -34,74 +34,59 @@ type CartProviderProps = {
 
 export function CartProvider({ children }: CartProviderProps) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
+  const { token } = useAuth();
 
   function adicionarAoCarrinho(produto: Produto) {
-    setItens((itensAtuais) => {
-      const itemExistente = itensAtuais.find(
+    setItens((atuais) => {
+      const existente = atuais.find(
         (item) => item.produto.id === produto.id
       );
 
-      if (itemExistente) {
-        return itensAtuais.map((item) =>
+      if (existente) {
+        return atuais.map((item) =>
           item.produto.id === produto.id
-            ? {
-                ...item,
-                quantidade: item.quantidade + 1,
-              }
+            ? { ...item, quantidade: item.quantidade + 1 }
             : item
         );
       }
 
-      return [
-        ...itensAtuais,
-        {
-          produto,
-          quantidade: 1,
-        },
-      ];
+      return [...atuais, { produto, quantidade: 1 }];
     });
   }
 
-  function aumentarQuantidade(produtoId: number) {
-    setItens((itensAtuais) =>
-      itensAtuais.map((item) =>
+  function aumentarQuantidade(produtoId: string) {
+    setItens((atuais) =>
+      atuais.map((item) =>
         item.produto.id === produtoId
-          ? {
-              ...item,
-              quantidade: item.quantidade + 1,
-            }
+          ? { ...item, quantidade: item.quantidade + 1 }
           : item
       )
     );
   }
 
-  function diminuirQuantidade(produtoId: number) {
-    setItens((itensAtuais) =>
-      itensAtuais
+  function diminuirQuantidade(produtoId: string) {
+    setItens((atuais) =>
+      atuais
         .map((item) =>
           item.produto.id === produtoId
-            ? {
-                ...item,
-                quantidade: item.quantidade - 1,
-              }
+            ? { ...item, quantidade: item.quantidade - 1 }
             : item
         )
         .filter((item) => item.quantidade > 0)
     );
   }
 
-  function removerDoCarrinho(produtoId: number) {
-    setItens((itensAtuais) =>
-      itensAtuais.filter(
-        (item) => item.produto.id !== produtoId
-      )
+  function removerDoCarrinho(produtoId: string) {
+    setItens((atuais) =>
+      atuais.filter((item) => item.produto.id !== produtoId)
     );
   }
 
   function calcularSubtotal(item: ItemCarrinho) {
+    const promocional = item.produto.precoPromocional;
     const preco =
-      item.produto.precoPromocional < item.produto.precoAtual
-        ? item.produto.precoPromocional
+      promocional != null && promocional < item.produto.precoAtual
+        ? promocional
         : item.produto.precoAtual;
 
     return preco * item.quantidade;
@@ -114,24 +99,33 @@ export function CartProvider({ children }: CartProviderProps) {
     );
   }
 
-  function finalizarPedido() {
-    const dataCompra = new Date().toLocaleDateString("pt-BR");
+  async function finalizarPedido(): Promise<boolean> {
+    if (!token || itens.length === 0) {
+      return false;
+    }
 
-    itens.forEach((item) => {
-      const preco =
-        item.produto.precoPromocional < item.produto.precoAtual
-          ? item.produto.precoPromocional
-          : item.produto.precoAtual;
+    try {
+      await apiPost(
+        "/api/compras",
+        {
+          itens: itens.map((item) => ({
+            produto: item.produto.id,
+            quantidade: item.quantidade,
+          })),
+        },
+        token
+      );
 
-      // Cria apenas UM registro para cada produto comprado
-      comprasMock.push({
-        nomeProduto: item.produto.nome,
-        preco: preco,
-        dataCompra: dataCompra,
-      });
-    });
+      setItens([]);
+      return true;
+    } catch (error) {
+      console.log(
+        "Erro ao finalizar pedido:",
+        error instanceof Error ? error.message : error
+      );
 
-    setItens([]);
+      return false;
+    }
   }
 
   return (
@@ -156,9 +150,7 @@ export function useCart() {
   const context = useContext(CartContext);
 
   if (!context) {
-    throw new Error(
-      "useCart deve ser usado dentro de CartProvider"
-    );
+    throw new Error("useCart deve ser usado dentro de CartProvider");
   }
 
   return context;

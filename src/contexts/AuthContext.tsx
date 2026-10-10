@@ -1,22 +1,26 @@
 import {
-    createContext,
-    ReactNode,
-    useContext,
-    useState,
-    } from "react";
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+} from "react";
 
-    type Usuario = {
+import { apiPost } from "../services/api";
+
+type Usuario = {
+    id?: string;
     nomeCompleto: string;
     cpf: string;
     login: string;
-    senha: string;
+    senha?: string;
     };
 
-    type AuthContextData = {
+type AuthContextData = {
     usuario: Usuario | null;
     usuarioAutenticado: Usuario | null;
-    cadastrarUsuario: (novoUsuario: Usuario) => boolean;
-    fazerLogin: (login: string, senha: string) => boolean;
+    token: string | null;
+    cadastrarUsuario: (novoUsuario: Usuario) => Promise<boolean>;
+    fazerLogin: (login: string, senha: string) => Promise<boolean>;
     sair: () => void;
     };
 
@@ -24,65 +28,63 @@ import {
     undefined
     );
 
-    type AuthProviderProps = {
+type AuthProviderProps = {
     children: ReactNode;
     };
 
     export function AuthProvider({ children }: AuthProviderProps) {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
-
-    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-
     const [usuarioAutenticado, setUsuarioAutenticado] =
         useState<Usuario | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
-    function cadastrarUsuario(novoUsuario: Usuario) {
-        const cpfJaCadastrado = usuarios.some(
-        (usuario) => usuario.cpf === novoUsuario.cpf
-        );
-
-        if (cpfJaCadastrado) {
-        return false;
-        }
-
-        const loginJaCadastrado = usuarios.some(
-        (usuario) => usuario.login === novoUsuario.login
-        );
-
-        if (loginJaCadastrado) {
-        return false;
-        }
-
-        setUsuarios((usuariosAtuais) => [
-        ...usuariosAtuais,
-        novoUsuario,
-        ]);
-
+    async function cadastrarUsuario(novoUsuario: Usuario) {
+        try {
+        await apiPost("/api/users", novoUsuario);
         setUsuario(novoUsuario);
-
         return true;
+        } catch (error) {
+        console.log("Erro no cadastro:", error);
+        return false;
+        }
     }
 
-    function fazerLogin(login: string, senha: string) {
-        const loginNormalizado = login.trim().toLowerCase();
+    async function fazerLogin(login: string, senha: string) {
+        try {
+        const resposta = await apiPost<{
+            success: boolean;
+            token: string;
+            usuario: {
+            id: string;
+            nomeCompleto: string;
+            login: string;
+            };
+        }>("/api/users/login", {
+            login: login.trim().toLowerCase(),
+            senha,
+        });
 
-        const usuarioEncontrado = usuarios.find(
-        (usuario) =>
-            usuario.login === loginNormalizado &&
-            usuario.senha === senha
-        );
-
-        if (!usuarioEncontrado) {
-        return false;
-        }
-
-        setUsuarioAutenticado(usuarioEncontrado);
+        setToken(resposta.token);
+        setUsuarioAutenticado({
+        id: resposta.usuario.id,
+        nomeCompleto: resposta.usuario.nomeCompleto,
+        cpf: "",
+        login: resposta.usuario.login,
+        });
 
         return true;
+        } catch (error) {
+            console.log(
+                "Erro no login:",
+                error instanceof Error ? error.message : error
+            );
+            return false;
+        }
     }
 
     function sair() {
         setUsuarioAutenticado(null);
+        setToken(null);
     }
 
     return (
@@ -90,6 +92,7 @@ import {
         value={{
             usuario,
             usuarioAutenticado,
+            token,
             cadastrarUsuario,
             fazerLogin,
             sair,
@@ -98,15 +101,13 @@ import {
         {children}
         </AuthContext.Provider>
     );
-    }
+}
 
-    export function useAuth() {
+export function useAuth() {
     const context = useContext(AuthContext);
 
     if (!context) {
-        throw new Error(
-        "useAuth deve ser usado dentro de AuthProvider"
-        );
+        throw new Error("useAuth deve ser usado dentro de AuthProvider");
     }
 
     return context;

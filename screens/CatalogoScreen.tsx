@@ -1,4 +1,8 @@
+
+import { useEffect, useState } from "react";
+
 import {
+  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,9 +12,10 @@ import {
 
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { produtosMock } from "../src/data/produtos";
+import type { Produto } from "../src/data/produtos";
 import { useCart } from "../src/contexts/CartContext";
 import { useAuth } from "../src/contexts/AuthContext";
+import { apiGet } from "../src/services/api";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import Assistente from "../src/components/Assistente";
 import CardProduto from "../src/components/CardProduto";
@@ -20,15 +25,92 @@ type CatalogoScreenProps = NativeStackScreenProps<
   "Catalogo"
 >;
 
+type ProdutoApi = {
+  _id: string;
+  nome: string;
+  precoAtual: number;
+  precoPromocional?: number;
+  tipo: string;
+  descricao: string;
+  dataValidade?: string;
+};
+
+type RespostaProdutos = {
+  success: boolean;
+  produtos: ProdutoApi[];
+};
+
+function formatarValidade(data?: string) {
+  if (!data) {
+    return "Não se aplica";
+  }
+
+  const parteData = data.slice(0, 10);
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(parteData)) {
+    const [ano, mes, dia] = parteData.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  return data;
+}
+
 export default function CatalogoScreen({
   navigation,
 }: CatalogoScreenProps) {
   const { adicionarAoCarrinho, itens } = useCart();
   const { sair } = useAuth();
 
-  const produtos = produtosMock;
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
 
-  const erro = false;
+  useEffect(() => {
+    let ativo = true;
+
+    async function carregarProdutos() {
+      try {
+        setCarregando(true);
+        setErro(false);
+
+        const resposta = await apiGet<RespostaProdutos>(
+          "/api/products"
+        );
+
+        const produtosFormatados: Produto[] =
+          resposta.produtos.map((produto) => ({
+            id: produto._id,
+            nome: produto.nome,
+            precoAtual: produto.precoAtual,
+            precoPromocional:
+              produto.precoPromocional ?? produto.precoAtual,
+            tipo: produto.tipo,
+            descricao: produto.descricao,
+            dataValidade: formatarValidade(
+              produto.dataValidade
+            ),
+          }));
+
+        if (ativo) {
+          setProdutos(produtosFormatados);
+        }
+      } catch {
+        if (ativo) {
+          setErro(true);
+        }
+      } finally {
+        if (ativo) {
+          setCarregando(false);
+        }
+      }
+    }
+
+    carregarProdutos();
+
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
   function handleSair() {
     sair();
@@ -39,6 +121,17 @@ export default function CatalogoScreen({
     });
   }
 
+  if (carregando) {
+    return (
+      <View style={styles.emptyContainer}>
+        <ActivityIndicator size="large" color="#2563EB" />
+        <Text style={styles.emptySubtitle}>
+          Carregando produtos...
+        </Text>
+      </View>
+    );
+  }
+
   if (erro) {
     return (
       <View style={styles.emptyContainer}>
@@ -47,9 +140,26 @@ export default function CatalogoScreen({
         </Text>
 
         <Text style={styles.emptySubtitle}>
-          Ocorreu um erro ao carregar o catálogo.
-          Tente novamente mais tarde.
+          Confira se o backend está funcionando e tente novamente.
         </Text>
+
+        <Pressable
+          style={styles.historyButton}
+          onPress={() => navigation.replace("Catalogo")}
+        >
+          <Text style={styles.historyButtonText}>
+            Tentar novamente
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.logoutButton}
+          onPress={handleSair}
+        >
+          <Text style={styles.logoutText}>
+            Sair da conta
+          </Text>
+        </Pressable>
       </View>
     );
   }
@@ -62,7 +172,7 @@ export default function CatalogoScreen({
         </Text>
 
         <Text style={styles.emptySubtitle}>
-          No momento não há produtos para exibir.
+          No momento não há produtos cadastrados.
         </Text>
 
         <Pressable
@@ -126,9 +236,7 @@ export default function CatalogoScreen({
                 produtoId: produto.id,
               })
             }
-            onAdicionar={() =>
-              adicionarAoCarrinho(produto)
-            }
+            onAdicionar={() => adicionarAoCarrinho(produto)}
           />
         ))}
 
@@ -222,6 +330,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#5F6B7A",
     textAlign: "center",
+    marginTop: 12,
   },
 
   header: {
