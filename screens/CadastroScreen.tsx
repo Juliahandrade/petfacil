@@ -16,9 +16,9 @@ import { useAuth } from "../src/contexts/AuthContext";
 type CadastroScreenProps = NativeStackScreenProps<
     RootStackParamList,
     "Cadastro"
-    >;
+>;
 
-    type CampoProps = {
+type CampoProps = {
     titulo: string;
     placeholder: string;
     valor: string;
@@ -27,9 +27,9 @@ type CadastroScreenProps = NativeStackScreenProps<
     senhaSegura?: boolean;
     maiusculas?: "none" | "words" | "sentences" | "characters";
     maxLength?: number;
-    };
+};
 
-    function Campo({
+function Campo({
     titulo,
     placeholder,
     valor,
@@ -38,42 +38,42 @@ type CadastroScreenProps = NativeStackScreenProps<
     senhaSegura = false,
     maiusculas = "none",
     maxLength,
-    }: CampoProps) {
+}: CampoProps) {
     return (
         <View style={styles.grupoCampo}>
-        <Text style={styles.label}>{titulo}</Text>
-        <TextInput
-            style={styles.input}
-            placeholder={placeholder}
-            placeholderTextColor="#94A3B8"
-            value={valor}
-            onChangeText={alterar}
-            keyboardType={teclado}
-            secureTextEntry={senhaSegura}
-            autoCapitalize={maiusculas}
-            autoCorrect={false}
-            maxLength={maxLength}
-            blurOnSubmit={false}
-            returnKeyType="next"
-        />
+            <Text style={styles.label}>{titulo}</Text>
+            <TextInput
+                style={styles.input}
+                placeholder={placeholder}
+                placeholderTextColor="#94A3B8"
+                value={valor}
+                onChangeText={alterar}
+                keyboardType={teclado}
+                secureTextEntry={senhaSegura}
+                autoCapitalize={maiusculas}
+                autoCorrect={false}
+                maxLength={maxLength}
+                blurOnSubmit={false}
+                returnKeyType="next"
+            />
         </View>
     );
-    }
+}
 
-    function limparCPF(valor: string) {
+function limparCPF(valor: string) {
     return valor.replace(/\D/g, "");
-    }
+}
 
-    function formatarCPF(valor: string) {
+function formatarCPF(valor: string) {
     const numeros = limparCPF(valor).slice(0, 11);
 
     return numeros
         .replace(/^(\d{3})(\d)/, "$1.$2")
         .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
         .replace(/\.(\d{3})(\d)/, ".$1-$2");
-    }
+}
 
-    function validarCPF(cpfInformado: string) {
+function validarCPF(cpfInformado: string) {
     const cpf = limparCPF(cpfInformado);
 
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
@@ -87,6 +87,7 @@ type CadastroScreenProps = NativeStackScreenProps<
     }
 
     let resto = (soma * 10) % 11;
+
     if (resto === 10) resto = 0;
 
     if (resto !== Number(cpf[9])) return false;
@@ -98,14 +99,15 @@ type CadastroScreenProps = NativeStackScreenProps<
     }
 
     resto = (soma * 10) % 11;
+
     if (resto === 10) resto = 0;
 
     return resto === Number(cpf[10]);
-    }
+}
 
-    export default function CadastroScreen({
+export default function CadastroScreen({
     navigation,
-    }: CadastroScreenProps) {
+}: CadastroScreenProps) {
     const { cadastrarUsuario } = useAuth();
 
     const [nome, setNome] = useState("");
@@ -137,189 +139,199 @@ type CadastroScreenProps = NativeStackScreenProps<
         setCarregando(true);
 
         const usuario = {
-        nomeCompleto: nome.trim(),
-        cpf: limparCPF(cpf),
-        login: email.trim().toLowerCase(),
-        senha,
+            nomeCompleto: nome.trim(),
+            cpf: limparCPF(cpf),
+            login: email.trim().toLowerCase(),
+            senha,
         };
 
         try {
-        const cadastroRealizado = await cadastrarUsuario(usuario);
+            const cadastroRealizado = await cadastrarUsuario(usuario);
 
-        if (!cadastroRealizado) {
+            if (!cadastroRealizado) {
+                setErroCadastro(
+                    "Não foi possível criar a conta. Confira se o CPF ou e-mail já está cadastrado."
+                );
+                return;
+            }
+
+            navigation.navigate("Login");
+        } catch {
             setErroCadastro(
-            "Não foi possível criar a conta. Confira se o CPF ou e-mail já está cadastrado."
+                "Não foi possível criar a conta. Verifique sua conexão e tente novamente."
             );
-            return;
-        }
-
-        navigation.navigate("Login");
         } finally {
-        setCarregando(false);
+            setCarregando(false);
         }
     }
 
     return (
         <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={styles.container}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
         >
-        <ScrollView
-            contentContainerStyle={styles.conteudo}
-            keyboardShouldPersistTaps="always"
-            keyboardDismissMode="none"
-            showsVerticalScrollIndicator={false}
-        >
-            <TouchableOpacity
-            style={styles.voltar}
-            onPress={() => navigation.navigate("Login")}
-            activeOpacity={0.7}
+            <ScrollView
+                contentContainerStyle={styles.conteudo}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                automaticallyAdjustKeyboardInsets={Platform.OS === "ios"}
+                showsVerticalScrollIndicator={false}
             >
-            <Text style={styles.setaVoltar}>‹</Text>
-            <Text style={styles.textoVoltar}>Voltar ao login</Text>
-            </TouchableOpacity>
-
-            <View style={styles.cabecalho}>
-            <View style={styles.logoCirculo}>
-                <Text style={styles.patinha}>🐾</Text>
-            </View>
-
-            <Text style={styles.logo}>PetFacil</Text>
-            <Text style={styles.slogan}>
-                Mais carinho em cada cuidado.
-            </Text>
-            </View>
-
-            <View style={styles.cartao}>
-            <Text style={styles.titulo}>Crie sua conta</Text>
-
-            <Text style={styles.descricao}>
-                Preencha seus dados para realizar seu cadastro.
-            </Text>
-
-            <View style={styles.linhaSecao}>
-                <View style={styles.indicadorSecao} />
-                <Text style={styles.textoSecao}>SEUS DADOS</Text>
-            </View>
-
-            <Campo
-                titulo="Nome completo"
-                placeholder="Digite seu nome completo"
-                valor={nome}
-                alterar={setNome}
-                maiusculas="words"
-            />
-
-            {nome.length > 0 && !nomeValido ? (
-                <Text style={styles.erroCampo}>
-                Informe pelo menos 2 caracteres.
-                </Text>
-            ) : null}
-
-            <Campo
-                titulo="E-mail"
-                placeholder="exemplo@email.com"
-                valor={email}
-                alterar={setEmail}
-                teclado="email-address"
-            />
-
-            {email.length > 0 && !emailValido ? (
-                <Text style={styles.erroCampo}>
-                Digite um e-mail válido.
-                </Text>
-            ) : null}
-
-            <Campo
-                titulo="CPF"
-                placeholder="000.000.000-00"
-                valor={cpf}
-                alterar={(texto) => setCpf(formatarCPF(texto))}
-                teclado="numeric"
-                maxLength={14}
-            />
-
-            {cpf.length > 0 && !cpfValido ? (
-                <Text style={styles.erroCampo}>
-                Confira os números do CPF.
-                </Text>
-            ) : null}
-
-            <Campo
-                titulo="Senha"
-                placeholder="Mínimo de 6 caracteres"
-                valor={senha}
-                alterar={setSenha}
-                senhaSegura
-            />
-
-            {senha.length > 0 && !senhaValida ? (
-                <Text style={styles.erroCampo}>
-                A senha deve ter pelo menos 6 caracteres.
-                </Text>
-            ) : null}
-
-            <Campo
-                titulo="Confirmar senha"
-                placeholder="Digite a senha novamente"
-                valor={confirmarSenha}
-                alterar={setConfirmarSenha}
-                senhaSegura
-            />
-
-            {confirmarSenha.length > 0 && !senhasConferem ? (
-                <Text style={styles.erroCampo}>
-                As senhas não coincidem.
-                </Text>
-            ) : null}
-
-            {erroCadastro ? (
-                <View style={styles.caixaErro}>
-                <Text style={styles.textoErro}>{erroCadastro}</Text>
-                </View>
-            ) : null}
-
-            <TouchableOpacity
-                style={[
-                styles.botao,
-                (!formularioValido || carregando) &&
-                    styles.botaoDesabilitado,
-                ]}
-                onPress={cadastrar}
-                disabled={!formularioValido || carregando}
-                activeOpacity={0.8}
-            >
-                <Text style={styles.textoBotao}>
-                {carregando ? "Criando sua conta..." : "Criar minha conta"}
-                </Text>
-
-                {!carregando ? (
-                <Text style={styles.setaBotao}>→</Text>
-                ) : null}
-            </TouchableOpacity>
-
-            <View style={styles.rodape}>
-                <Text style={styles.textoRodape}>
-                Já tem uma conta?
-                </Text>
-
                 <TouchableOpacity
-                onPress={() => navigation.navigate("Login")}
+                    style={styles.voltar}
+                    onPress={() => navigation.navigate("Login")}
+                    activeOpacity={0.7}
                 >
-                <Text style={styles.link}> Entrar</Text>
+                    <Text style={styles.setaVoltar}>‹</Text>
+                    <Text style={styles.textoVoltar}>Voltar ao login</Text>
                 </TouchableOpacity>
-            </View>
-            </View>
 
-            <Text style={styles.rodapeAplicativo}>
-            PETFACIL • CUIDANDO DE QUEM VOCÊ AMA
-            </Text>
-        </ScrollView>
+                <View style={styles.cabecalho}>
+                    <View style={styles.logoCirculo}>
+                        <Text style={styles.patinha}>🐾</Text>
+                    </View>
+
+                    <Text style={styles.logo}>PetFacil</Text>
+                    <Text style={styles.slogan}>
+                        Mais carinho em cada cuidado.
+                    </Text>
+                </View>
+
+                <View style={styles.cartao}>
+                    <Text style={styles.titulo}>Crie sua conta</Text>
+
+                    <Text style={styles.descricao}>
+                        Preencha seus dados para realizar seu cadastro.
+                    </Text>
+
+                    <View style={styles.linhaSecao}>
+                        <View style={styles.indicadorSecao} />
+                        <Text style={styles.textoSecao}>SEUS DADOS</Text>
+                    </View>
+
+                    <Campo
+                        titulo="Nome completo"
+                        placeholder="Digite seu nome completo"
+                        valor={nome}
+                        alterar={setNome}
+                        maiusculas="words"
+                    />
+
+                    {nome.length > 0 && !nomeValido ? (
+                        <Text style={styles.erroCampo}>
+                            Informe pelo menos 2 caracteres.
+                        </Text>
+                    ) : null}
+
+                    <Campo
+                        titulo="E-mail"
+                        placeholder="exemplo@email.com"
+                        valor={email}
+                        alterar={setEmail}
+                        teclado="email-address"
+                    />
+
+                    {email.length > 0 && !emailValido ? (
+                        <Text style={styles.erroCampo}>
+                            Digite um e-mail válido.
+                        </Text>
+                    ) : null}
+
+                    <Campo
+                        titulo="CPF"
+                        placeholder="000.000.000-00"
+                        valor={cpf}
+                        alterar={(texto) => setCpf(formatarCPF(texto))}
+                        teclado="numeric"
+                        maxLength={14}
+                    />
+
+                    {cpf.length > 0 && !cpfValido ? (
+                        <Text style={styles.erroCampo}>
+                            Confira os números do CPF.
+                        </Text>
+                    ) : null}
+
+                    <Campo
+                        titulo="Senha"
+                        placeholder="Mínimo de 6 caracteres"
+                        valor={senha}
+                        alterar={setSenha}
+                        senhaSegura
+                    />
+
+                    {senha.length > 0 && !senhaValida ? (
+                        <Text style={styles.erroCampo}>
+                            A senha deve ter pelo menos 6 caracteres.
+                        </Text>
+                    ) : null}
+
+                    <Campo
+                        titulo="Confirmar senha"
+                        placeholder="Digite a senha novamente"
+                        valor={confirmarSenha}
+                        alterar={setConfirmarSenha}
+                        senhaSegura
+                    />
+
+                    {confirmarSenha.length > 0 && !senhasConferem ? (
+                        <Text style={styles.erroCampo}>
+                            As senhas não coincidem.
+                        </Text>
+                    ) : null}
+
+                    {erroCadastro ? (
+                        <View style={styles.caixaErro}>
+                            <Text style={styles.textoErro}>
+                                {erroCadastro}
+                            </Text>
+                        </View>
+                    ) : null}
+
+                    <TouchableOpacity
+                        style={[
+                            styles.botao,
+                            (!formularioValido || carregando) &&
+                                styles.botaoDesabilitado,
+                        ]}
+                        onPress={cadastrar}
+                        disabled={!formularioValido || carregando}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.textoBotao}>
+                            {carregando
+                                ? "Criando sua conta..."
+                                : "Criar minha conta"}
+                        </Text>
+
+                        {!carregando ? (
+                            <Text style={styles.setaBotao}>→</Text>
+                        ) : null}
+                    </TouchableOpacity>
+
+                    <View style={styles.rodape}>
+                        <Text style={styles.textoRodape}>
+                            Já tem uma conta?
+                        </Text>
+
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("Login")}
+                        >
+                            <Text style={styles.link}> Entrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <Text style={styles.rodapeAplicativo}>
+                    PETFACIL • CUIDANDO DE QUEM VOCÊ AMA
+                </Text>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
-    }
+}
 
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F2F6FD",
@@ -327,15 +339,15 @@ type CadastroScreenProps = NativeStackScreenProps<
     conteudo: {
         flexGrow: 1,
         paddingHorizontal: 22,
-        paddingTop: 20,
-        paddingBottom: 24,
+        paddingTop: 14,
+        paddingBottom: 20,
     },
     voltar: {
         flexDirection: "row",
         alignItems: "center",
         alignSelf: "flex-start",
         paddingVertical: 5,
-        marginBottom: 18,
+        marginBottom: 12,
     },
     setaVoltar: {
         color: "#2563EB",
@@ -350,37 +362,37 @@ type CadastroScreenProps = NativeStackScreenProps<
     },
     cabecalho: {
         alignItems: "center",
-        marginBottom: 25,
+        marginBottom: 18,
     },
     logoCirculo: {
-        width: 66,
-        height: 66,
-        borderRadius: 33,
+        width: 58,
+        height: 58,
+        borderRadius: 29,
         backgroundColor: "#DCEAFF",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 9,
+        marginBottom: 7,
     },
     patinha: {
-        fontSize: 33,
+        fontSize: 30,
     },
     logo: {
         color: "#1E3A8A",
-        fontSize: 31,
+        fontSize: 29,
         fontWeight: "800",
         letterSpacing: 0.3,
     },
     slogan: {
         color: "#718096",
         fontSize: 13,
-        marginTop: 5,
+        marginTop: 4,
     },
     cartao: {
         backgroundColor: "#FFFFFF",
         borderRadius: 22,
         paddingHorizontal: 21,
-        paddingTop: 25,
-        paddingBottom: 23,
+        paddingTop: 22,
+        paddingBottom: 22,
         borderWidth: 1,
         borderColor: "#E7EDF7",
         elevation: 3,
@@ -399,7 +411,7 @@ type CadastroScreenProps = NativeStackScreenProps<
         color: "#718096",
         fontSize: 13,
         lineHeight: 20,
-        marginBottom: 23,
+        marginBottom: 20,
     },
     linhaSecao: {
         flexDirection: "row",
@@ -492,7 +504,7 @@ type CadastroScreenProps = NativeStackScreenProps<
         flexDirection: "row",
         justifyContent: "center",
         flexWrap: "wrap",
-        marginTop: 22,
+        marginTop: 20,
     },
     textoRodape: {
         color: "#718096",
@@ -509,6 +521,6 @@ type CadastroScreenProps = NativeStackScreenProps<
         fontWeight: "700",
         letterSpacing: 1.4,
         textAlign: "center",
-        marginTop: 20,
+        marginTop: 16,
     },
 });

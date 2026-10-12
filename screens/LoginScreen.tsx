@@ -49,6 +49,8 @@ type LoginScreenProps = NativeStackScreenProps<
         }
 
         navigation.navigate("Catalogo");
+        } catch {
+        setErro("Não foi possível entrar. Verifique sua conexão.");
         } finally {
         setCarregando(false);
         }
@@ -57,11 +59,15 @@ type LoginScreenProps = NativeStackScreenProps<
     return (
         <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
         >
         <ScrollView
             contentContainerStyle={styles.conteudo}
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            showsVerticalScrollIndicator={false}
+            automaticallyAdjustKeyboardInsets={Platform.OS === "ios"}
         >
             <View style={styles.cabecalho}>
             <View style={styles.logoCirculo}>
@@ -69,7 +75,6 @@ type LoginScreenProps = NativeStackScreenProps<
             </View>
 
             <Text style={styles.logo}>PetFacil</Text>
-            
             </View>
 
             <View style={styles.formulario}>
@@ -90,6 +95,7 @@ type LoginScreenProps = NativeStackScreenProps<
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                returnKeyType="next"
             />
 
             <Text style={styles.label}>Senha</Text>
@@ -101,11 +107,13 @@ type LoginScreenProps = NativeStackScreenProps<
                 value={senha}
                 onChangeText={setSenha}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="done"
+                onSubmitEditing={entrar}
             />
 
-            {erro ? (
-                <Text style={styles.erro}>{erro}</Text>
-            ) : null}
+            {erro ? <Text style={styles.erro}>{erro}</Text> : null}
 
             <TouchableOpacity
                 style={[
@@ -147,35 +155,29 @@ type LoginScreenProps = NativeStackScreenProps<
         flexGrow: 1,
         justifyContent: "center",
         paddingHorizontal: 28,
-        paddingVertical: 35,
+        paddingVertical: 24,
     },
     cabecalho: {
         alignItems: "center",
-        marginBottom: 38,
+        marginBottom: 28,
     },
     logoCirculo: {
-        width: 82,
-        height: 82,
-        borderRadius: 41,
+        width: 72,
+        height: 72,
+        borderRadius: 36,
         backgroundColor: "#E8F1FF",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 14,
+        marginBottom: 12,
     },
     patinha: {
-        fontSize: 39,
+        fontSize: 35,
     },
     logo: {
-        fontSize: 36,
+        fontSize: 34,
         fontWeight: "bold",
         color: "#1E3A8A",
         letterSpacing: 0.5,
-    },
-    subtitulo: {
-        fontSize: 14,
-        color: "#64748B",
-        marginTop: 8,
-        textAlign: "center",
     },
     formulario: {
         width: "100%",
@@ -189,7 +191,7 @@ type LoginScreenProps = NativeStackScreenProps<
     descricao: {
         fontSize: 15,
         color: "#64748B",
-        marginBottom: 28,
+        marginBottom: 24,
     },
     label: {
         color: "#334155",
@@ -206,7 +208,7 @@ type LoginScreenProps = NativeStackScreenProps<
         paddingHorizontal: 16,
         fontSize: 15,
         color: "#1E293B",
-        marginBottom: 20,
+        marginBottom: 18,
     },
     erro: {
         color: "#D32F2F",
@@ -214,7 +216,7 @@ type LoginScreenProps = NativeStackScreenProps<
         marginBottom: 14,
     },
     botao: {
-        height: 54,
+        minHeight: 54,
         backgroundColor: "#2563EB",
         borderRadius: 14,
         alignItems: "center",
@@ -234,7 +236,8 @@ type LoginScreenProps = NativeStackScreenProps<
         flexDirection: "row",
         justifyContent: "center",
         flexWrap: "wrap",
-        marginTop: 26,
+        marginTop: 24,
+        paddingBottom: 12,
     },
     textoRodape: {
         color: "#64748B",

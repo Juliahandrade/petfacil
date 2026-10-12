@@ -6,7 +6,7 @@ import CatalogoScreen from "../screens/CatalogoScreen";
 import CarrinhoScreen from "../screens/CarrinhoScreen";
 import HistoricoComprasScreen from "../screens/HistoricoComprasScreen";
 import DetalhesProdutoScreen from "../screens/DetalhesProdutoScreen";
-
+import PerfilScreen from "../screens/PerfilScreen";
 
 export type RootStackParamList = {
     Login: undefined;
@@ -14,28 +14,29 @@ export type RootStackParamList = {
     Catalogo: undefined;
     Carrinho: undefined;
     HistoricoCompras: undefined;
+    Perfil: undefined;
     DetalhesProduto: {
-    produtoId: string;
+        produtoId: string;
     };
+};
 
-    };
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-    const Stack = createNativeStackNavigator<RootStackParamList>();
-
-    export default function AppNavigator() {
+export default function AppNavigator() {
     return (
         <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{
-            headerShown: false,
-        }}
+            initialRouteName="Login"
+            screenOptions={{
+                headerShown: false,
+            }}
         >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Cadastro" component={CadastroScreen} />
-        <Stack.Screen name="Catalogo" component={CatalogoScreen} />
-        <Stack.Screen name="Carrinho" component={CarrinhoScreen} />
-        <Stack.Screen name="HistoricoCompras"component={HistoricoComprasScreen}/>
-        <Stack.Screen name="DetalhesProduto"component={DetalhesProdutoScreen}/>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Cadastro" component={CadastroScreen} />
+            <Stack.Screen name="Catalogo" component={CatalogoScreen} />
+            <Stack.Screen name="Carrinho" component={CarrinhoScreen} />
+            <Stack.Screen name="HistoricoCompras" component={HistoricoComprasScreen} />
+            <Stack.Screen name="Perfil" component={PerfilScreen} />
+            <Stack.Screen name="DetalhesProduto" component={DetalhesProdutoScreen} />
         </Stack.Navigator>
     );
-    }
+}

@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.2.107:3000";
+const API_URL = "http://192.168.2.105:3000";
 
 export async function apiGet<T>(
   rota: string,
